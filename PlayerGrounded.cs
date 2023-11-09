@@ -9,10 +9,10 @@ public partial class PlayerGrounded : State
     public int IdleSpeed { get; set; } = 14;
 
     [Export]
-    public int IdleAcceleration { get; set; } = 200;
+    public int IdleAcceleration { get; set; } = 75;
 
     [Export]
-    public int JumpSpeed { get; set; } = 20;
+    public int JumpSpeed { get; set; } = 28;
 
     [Export]
     private Camera3D _Camera;
@@ -33,9 +33,11 @@ public partial class PlayerGrounded : State
     public override void PhysicsUpdate(double delta)
     {
         var direction = Vector3.Zero;
-        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition).Normalized();
+        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition);
+        cameraDifferenceVector.Y = 0;    
+        cameraDifferenceVector = cameraDifferenceVector.Normalized();
         cameraDifferenceVector.Y = 0;
-        Vector3 orthogonalCameraDifferenceVector = new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X);
+        Vector3 orthogonalCameraDifferenceVector = (new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X)).Normalized();
 
         if (Input.IsActionPressed("move_right"))
         {
@@ -57,7 +59,10 @@ public partial class PlayerGrounded : State
         {
             _targetVelocity.Y = JumpSpeed;
         }
-
+        if (direction.Length() < 0.1)
+        {
+            direction = Vector3.Zero;
+        }
         if (direction != Vector3.Zero)
         {
             if (direction.Length() > 1)
@@ -90,6 +95,11 @@ public partial class PlayerGrounded : State
             }
         }
         _Player.Velocity = _targetVelocity;
+
+        if (Input.IsActionJustPressed("roll"))
+        {
+            EmitSignal(SignalName.Transitioned, this.Name + "", "Rolling");
+        }
 
         if (!_Player.IsOnFloor() || Input.IsActionJustPressed("jump")) // Gravity
         {

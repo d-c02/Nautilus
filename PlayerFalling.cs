@@ -14,10 +14,10 @@ public partial class PlayerFalling : State
 
 
     [Export]
-    public int IdleAcceleration { get; set; } = 50;
+    public int IdleAcceleration { get; set; } = 25;
 
     [Export]
-    public int FallAcceleration { get; set; } = 70;
+    public int FallAcceleration { get; set; } = 50;
 
     [Export]
     private Camera3D _Camera;
@@ -74,7 +74,11 @@ public partial class PlayerFalling : State
         {
             direction += cameraDifferenceVector * Input.GetActionStrength("move_forward");
         }
-        if (direction != Vector3.Zero)
+        if (direction.Length() < 0.1)
+        {
+            direction = Vector3.Zero;
+        }
+        if (direction != Vector3.Zero && direction.Length() > 1)
         {
             direction = direction.Normalized();
         }

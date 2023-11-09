@@ -30,11 +30,11 @@ public partial class CameraPivot : Node3D
         }
         if (Input.IsActionPressed("tilt_camera_up"))
         {
-            direction.X += 1.0f;
+            direction.X -= 1.0f;
         }
         if (Input.IsActionPressed("tilt_camera_down"))
         {
-            direction.X -= 1.0f;
+            direction.X += 1.0f;
         }
         if (direction != Vector2.Zero)
         {

@@ -1,15 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=10 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
 [ext_resource type="Script" path="res://StateMachine.cs" id="3_n2ags"]
 [ext_resource type="Script" path="res://PlayerGrounded.cs" id="4_d1kly"]
 [ext_resource type="Script" path="res://PlayerFalling.cs" id="5_43yp8"]
+[ext_resource type="Script" path="res://PlayerRolling.cs" id="6_q81j6"]
 [ext_resource type="Script" path="res://CameraPivot.cs" id="6_ucm27"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dsk1a"]
 radius = 0.387151
 height = 1.79243
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_raa5u"]
+radius = 0.387
+height = 0.796634
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_x7hwy")
@@ -19,9 +24,14 @@ script = ExtResource("1_x7hwy")
 [node name="Character" parent="Pivot" instance=ExtResource("2_n58eb")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.8, 0)
 
-[node name="Collider" type="CollisionShape3D" parent="."]
+[node name="StandardCollider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089457, 0)
 shape = SubResource("CapsuleShape3D_dsk1a")
+
+[node name="RollCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.411, 0)
+shape = SubResource("CapsuleShape3D_raa5u")
+disabled = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("_InitialState")]
 script = ExtResource("3_n2ags")
@@ -36,6 +46,13 @@ _Camera = NodePath("../../CameraPivot/Camera3D")
 script = ExtResource("5_43yp8")
 _Player = NodePath("../..")
 _Camera = NodePath("../../CameraPivot/Camera3D")
+
+[node name="Rolling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Pivot", "_StandardCollider", "_RollingCollider")]
+script = ExtResource("6_q81j6")
+_Player = NodePath("../..")
+_Pivot = NodePath("../../Pivot")
+_StandardCollider = NodePath("../../StandardCollider")
+_RollingCollider = NodePath("../../RollCollider")
 
 [node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.886203, 0.463296, 0, -0.463296, 0.886203, 0, 0, 0)
