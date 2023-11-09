@@ -15,7 +15,19 @@ public partial class PlayerGrounded : State
     public int JumpSpeed { get; set; } = 28;
 
     [Export]
+    private float _FloorDistTolerance;
+
+    [Export]
     private Camera3D _Camera;
+
+    [Export]
+    public double RollDelay { get; set; } = 0.8; //How long you need to wait between rolls
+
+    [Export]
+    public double AirDelay { get; set; } = 0.1; //How long you need to be in the air before going into falling state
+
+    private double _CurAirTime;
+    private double _CurRollTime;
 
     private Vector3 _targetVelocity;
 
@@ -94,15 +106,30 @@ public partial class PlayerGrounded : State
                 _targetVelocity.Z = _Player.Velocity.Z + (float)(IdleAcceleration * delta * direction.Z);
             }
         }
-        _Player.Velocity = _targetVelocity;
 
-        if (Input.IsActionJustPressed("roll"))
+        if (!_Player.IsOnFloor() || Input.IsActionJustPressed("jump"))
         {
+            _CurAirTime += delta;
+            //Snap to floor if floor is nearby
+        }
+        else
+        {
+            _CurAirTime = 0;
+            _targetVelocity.Y = 0;
+        }
+
+        _Player.Velocity = _targetVelocity;
+        _CurRollTime += delta;
+
+        if (Input.IsActionJustPressed("roll") && _CurRollTime >= RollDelay)
+        {
+            _CurRollTime = 0;
             EmitSignal(SignalName.Transitioned, this.Name + "", "Rolling");
         }
 
-        if (!_Player.IsOnFloor() || Input.IsActionJustPressed("jump")) // Gravity
+        if (_CurAirTime > AirDelay || Input.IsActionJustPressed("jump"))
         {
+            _CurRollTime = RollDelay;
             EmitSignal(SignalName.Transitioned, this.Name + "", "Falling");
         }
     }
@@ -116,9 +143,11 @@ public partial class PlayerGrounded : State
     {
         _targetVelocity = _Player.Velocity;
         _targetVelocity.Y = 0;
+        _CurAirTime = 0;
     }
 
     public override void Exit()
     {
+        _CurAirTime = 0;
     }
 }

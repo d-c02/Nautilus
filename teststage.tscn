@@ -1,17 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://dy23edwi76go7"]
+[gd_scene load_steps=5 format=3 uid="uid://dy23edwi76go7"]
 
-[ext_resource type="Texture2D" uid="uid://cfjvybofm5nen" path="res://The_Missing_textures.webp" id="1_m5usc"]
 [ext_resource type="PackedScene" uid="uid://b4djs5yvwadac" path="res://player.tscn" id="1_rgunv"]
+[ext_resource type="PackedScene" uid="uid://wg0hqki78hb7" path="res://testmap.glb" id="2_uqp13"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_43h3d"]
-size = Vector3(60, 2, 60)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8m4ic"]
-albedo_texture = ExtResource("1_m5usc")
-point_size = 128.0
+size = Vector3(100, 2, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_715gb"]
-size = Vector3(60, 2, 60)
+size = Vector3(100, 2, 100)
 
 [node name="TestStage" type="Node3D"]
 
@@ -22,7 +18,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_43h3d")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-material_override = SubResource("StandardMaterial3D_8m4ic")
 mesh = SubResource("BoxMesh_715gb")
 skeleton = NodePath("../..")
 
@@ -31,3 +26,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.815856, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.0572155, 0.998362, 0, -0.998362, 0.0572155, 0, 11.6031, 0)
+
+[node name="testmap" parent="." instance=ExtResource("2_uqp13")]
+transform = Transform3D(7.435, 0, 0, 0, 7.435, 0, 0, 0, 7.435, 6.08287, -74.5534, 155.312)

@@ -14,15 +14,16 @@ public partial class PlayerRolling : State
 	private CollisionShape3D _RollingCollider;
 
     [Export]
-    private double _ActiveTime = 0.4;
+    private double _ActiveTime = 0.1f;
 
     private double _CurTime = 0;
 
     [Export]
-    private float _Acceleration = 3.5f;
+    private float _Acceleration = 8f;
 
     [Export]
-    public int JumpSpeed { get; set; } = 17;
+    public int JumpSpeed { get; set; } = 20;
+
 
     private Vector3 _Direction;
 	// Called when the node enters the scene tree for the first time.
@@ -56,14 +57,16 @@ public partial class PlayerRolling : State
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
         }
-        if (_CurTime >= _ActiveTime / 2)
-        {
-            tmpVelocity = _Direction * _Acceleration;
-        }
-        else
-        {
-            tmpVelocity = -1 * _Direction * _Acceleration;
-        }
+        //if (_CurTime >= _ActiveTime / 2)
+        //{
+            //tmpVelocity = _Direction * _Acceleration;
+        //}
+        //else
+        //{
+        tmpVelocity = -1 * _Direction * _Acceleration;
+        //}
+        tmpVelocity.X += _Player.GetFloorNormal().X * _Acceleration * (float) delta;
+        tmpVelocity.Z += _Player.GetFloorNormal().Z * _Acceleration * (float) delta;
         if (Input.IsActionJustPressed("jump"))
         {
             tmpVelocity.Y = JumpSpeed;
