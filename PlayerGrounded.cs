@@ -14,6 +14,9 @@ public partial class PlayerGrounded : State
     [Export]
     public int JumpSpeed { get; set; } = 20;
 
+    [Export]
+    private Camera3D _Camera;
+
     private Vector3 _targetVelocity;
 
     // Called when the node enters the scene tree for the first time.
@@ -30,22 +33,25 @@ public partial class PlayerGrounded : State
     public override void PhysicsUpdate(double delta)
     {
         var direction = Vector3.Zero;
+        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition).Normalized();
+        cameraDifferenceVector.Y = 0;
+        Vector3 orthogonalCameraDifferenceVector = new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X);
 
         if (Input.IsActionPressed("move_right"))
         {
-            direction.X += 1.0f; //times GetActionStrength("move_right")
+            direction += orthogonalCameraDifferenceVector * Input.GetActionStrength("move_right"); //times GetActionStrength("move_right")
         }
         if (Input.IsActionPressed("move_left"))
         {
-            direction.X -= 1.0f;
+            direction -= orthogonalCameraDifferenceVector * Input.GetActionStrength("move_left");
         }
         if (Input.IsActionPressed("move_back"))
         {
-            direction.Z += 1.0f;
+            direction -= cameraDifferenceVector * Input.GetActionStrength("move_back");
         }
         if (Input.IsActionPressed("move_forward"))
         {
-            direction.Z -= 1.0f;
+            direction += cameraDifferenceVector * Input.GetActionStrength("move_forward");
         }
         if (Input.IsActionJustPressed("jump"))
         {
@@ -54,7 +60,10 @@ public partial class PlayerGrounded : State
 
         if (direction != Vector3.Zero)
         {
-            direction = direction.Normalized();
+            if (direction.Length() > 1)
+            {
+                direction = direction.Normalized();
+            }
             _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + direction, Vector3.Up);
         }
 

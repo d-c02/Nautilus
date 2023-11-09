@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=8 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
 [ext_resource type="Script" path="res://StateMachine.cs" id="3_n2ags"]
 [ext_resource type="Script" path="res://PlayerGrounded.cs" id="4_d1kly"]
 [ext_resource type="Script" path="res://PlayerFalling.cs" id="5_43yp8"]
+[ext_resource type="Script" path="res://CameraPivot.cs" id="6_ucm27"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dsk1a"]
 radius = 0.387151
@@ -16,7 +17,7 @@ script = ExtResource("1_x7hwy")
 [node name="Pivot" type="Node3D" parent="."]
 
 [node name="Character" parent="Pivot" instance=ExtResource("2_n58eb")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -0.8, 0)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.8, 0)
 
 [node name="Collider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089457, 0)
@@ -26,16 +27,19 @@ shape = SubResource("CapsuleShape3D_dsk1a")
 script = ExtResource("3_n2ags")
 _InitialState = NodePath("Grounded")
 
-[node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player")]
+[node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("4_d1kly")
 _Player = NodePath("../..")
+_Camera = NodePath("../../CameraPivot/Camera3D")
 
-[node name="Falling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player")]
+[node name="Falling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("5_43yp8")
 _Player = NodePath("../..")
+_Camera = NodePath("../../CameraPivot/Camera3D")
 
 [node name="CameraPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.774944, 0.632029, 0, -0.632029, 0.774944, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.886203, 0.463296, 0, -0.463296, 0.886203, 0, 0, 0)
+script = ExtResource("6_ucm27")
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
