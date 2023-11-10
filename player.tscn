@@ -17,7 +17,8 @@ radius = 0.387
 height = 0.796634
 
 [node name="Player" type="CharacterBody3D"]
-floor_snap_length = 0.2
+floor_constant_speed = true
+floor_snap_length = 0.9
 script = ExtResource("1_x7hwy")
 
 [node name="Pivot" type="Node3D" parent="."]
