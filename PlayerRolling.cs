@@ -3,7 +3,7 @@ using System;
 
 public partial class PlayerRolling : State
 {
-    [Export] private CharacterBody3D _Player;
+    [Export] private player _Player;
 
     [Export] private Node3D _Pivot;
 
@@ -38,13 +38,14 @@ public partial class PlayerRolling : State
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-	}
+    }
 
     public override void Enter()
     {
 		_StandardCollider.Disabled = true;
 		_RollingCollider.Disabled = false;
         _Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+
     }
 
     public override void Exit()

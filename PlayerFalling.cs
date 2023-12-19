@@ -5,7 +5,7 @@ using System;
 public partial class PlayerFalling : State
 {
 
-    [Export] private CharacterBody3D _Player;
+    [Export] private player _Player;
 
     private bool floatFall = true;
 
@@ -24,6 +24,11 @@ public partial class PlayerFalling : State
 
     private Vector3 _targetVelocity;
 
+    public override void _Ready()
+    {
+
+    }
+
     public override void Enter()
     {
         _targetVelocity = _Player.Velocity;
@@ -35,11 +40,12 @@ public partial class PlayerFalling : State
         {
             floatFall = true;
         }
+        _Player.FloorSnapLength = 0.2f;
     }
 
     public override void Exit()
     {
-
+        _Player.FloorSnapLength = 0.9f;
     }
 
     public override void Update(double delta)

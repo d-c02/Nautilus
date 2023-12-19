@@ -3,7 +3,7 @@ using System;
 
 public partial class PlayerGrounded : State
 {
-    [Export] private CharacterBody3D _Player;
+    [Export] private player _Player;
 
     [Export]
     public int IdleSpeed { get; set; } = 14;
@@ -31,9 +31,11 @@ public partial class PlayerGrounded : State
 
     private Vector3 _targetVelocity;
 
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -74,9 +76,11 @@ public partial class PlayerGrounded : State
         if (direction.Length() < 0.1)
         {
             direction = Vector3.Zero;
+            _Player._SetAnimState("Idle");
         }
-        if (direction != Vector3.Zero)
+        else if (direction != Vector3.Zero)
         {
+            _Player._SetAnimState("Run");
             if (direction.Length() > 1)
             {
                 direction = direction.Normalized();
@@ -118,6 +122,7 @@ public partial class PlayerGrounded : State
             _targetVelocity.Y = 0;
         }
 
+        _Player._SetRunTimeScale(new Vector3(_targetVelocity.X, 0, _targetVelocity.Z).Length());
         _Player.Velocity = _targetVelocity;
         _CurRollTime += delta;
 

@@ -1,12 +1,38 @@
 using Godot;
 using System;
 using System.Collections;
+using System.Security.AccessControl;
 
 public partial class player : CharacterBody3D
 {
+
+    [Export]
+    private AnimationTree _AnimationTree;
+
+    private AnimationNodeStateMachinePlayback _AnimationNodeStateMachinePlayback;
+
+    private AnimationNodeTimeScale _RunTimeScale;
+    public override void _Ready()
+    {
+        _AnimationNodeStateMachinePlayback = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+        //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
+    }
     public override void _PhysicsProcess(double delta)
     {
-        
         MoveAndSlide();
+    }
+
+    public void _SetAnimState(string state)
+    {
+        _AnimationNodeStateMachinePlayback.Travel(state);
+    }
+
+    public void _SetRunTimeScale(float val)
+    {
+        //_RunTimeScale.Set("TimeScale", val);
+        float normalizer = 10;
+        float minRunSpeed = 0.2f;
+        float maxRunSpeed = 2.0f;
+        _AnimationTree.Set("parameters/Run/TimeScale/scale", Math.Min(Math.Max(val/normalizer, minRunSpeed), maxRunSpeed));
     }
 }
