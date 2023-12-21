@@ -1,68 +1,54 @@
 using Godot;
-using Godot.NativeInterop;
 using System;
 
-public partial class PlayerFalling : State
+public partial class PlayerDiving : State
 {
 
     [Export] private player _Player;
 
-    private bool floatFall = true;
-
     [Export]
-    public int IdleSpeed { get; set; } = 14;
+    public int IdleSpeed { get; set; } = 9;
 
 
     [Export]
-    public int IdleAcceleration { get; set; } = 25;
+    public int IdleAcceleration { get; set; } = 10;
 
     [Export]
-    public int FallAcceleration { get; set; } = 50;
+    public int FallAcceleration { get; set; } = 100;
 
+    [Export]
+    public int FallImpulse = 50;
 
     [Export]
     private Camera3D _Camera;
 
     private Vector3 _targetVelocity;
 
-    private bool _InJumpTransition;
+    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
-    {
+	{
+	}
 
-    }
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+	{
+	}
 
     public override void Enter()
     {
-        _targetVelocity = _Player.Velocity;
-        if (!Input.IsActionPressed("jump"))
-        {
-            floatFall = false;
-            _InJumpTransition = false;
-        }
-        else
-        {
-            floatFall = true;
-            _InJumpTransition = true;
-        }
+        _targetVelocity = new Vector3(_Player.Velocity.X, _Player.Velocity.Y - FallImpulse, _Player.Velocity.Z);
         _Player.FloorSnapLength = 0f;
+        _Player._SetAnimState("Dive");
     }
 
     public override void Exit()
     {
-        _Player.FloorSnapLength = 0.85f;
+
     }
 
     public override void Update(double delta)
     {
-        if (!Input.IsActionPressed("jump"))
-        {
-            floatFall = false;
-        }
 
-        if (Input.IsActionPressed("dive"))
-        {
-            EmitSignal(SignalName.Transitioned, this.Name + "", "Diving");
-        }
     }
 
     public override void PhysicsUpdate(double delta)
@@ -121,28 +107,12 @@ public partial class PlayerFalling : State
         }
 
         float tmpAccel = FallAcceleration;
-        if (!floatFall)
-        {
-            tmpAccel = FallAcceleration * 2;
-        }
         _targetVelocity.Y = _targetVelocity.Y - (float)(tmpAccel * delta);
 
         if (_Player.IsOnFloor())
         {
             _targetVelocity.Y = 0;
-        
-        }
-        if (_targetVelocity.Y > 0)
-        {
-            _Player._SetAnimState("Jump");
-        }
-        else
-        {
-        if (!_InJumpTransition)
-        {
-            _Player._SetAnimState("Fall");
-        }
-            _Player._SetAnimState("JumpTransition");
+
         }
         _Player.Velocity = _targetVelocity;
         if (_Player.IsOnFloor())

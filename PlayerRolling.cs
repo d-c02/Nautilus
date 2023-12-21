@@ -14,12 +14,12 @@ public partial class PlayerRolling : State
 	private CollisionShape3D _RollingCollider;
 
     [Export]
-    private double _ActiveTime = 0.2f;
+    private double _ActiveTime = 0.5f;
 
     private double _CurTime = 0;
 
     [Export]
-    private float _Acceleration = 4f;
+    private float _Speed = 30f;
 
     [Export]
     public int JumpSpeed { get; set; } = 20;
@@ -45,7 +45,9 @@ public partial class PlayerRolling : State
 		_StandardCollider.Disabled = true;
 		_RollingCollider.Disabled = false;
         _Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
-
+        _Player._SetAnimState("Roll");
+        tmpVelocity.X = -1 * _Direction.X * _Speed + _Player.Velocity.X;
+        tmpVelocity.Z = -1 * _Direction.Z * _Speed + _Player.Velocity.Z;
     }
 
     public override void Exit()
@@ -73,8 +75,6 @@ public partial class PlayerRolling : State
         //else
         //{
         //tmpVelocity = -1 * _Direction * _Acceleration;
-        tmpVelocity.X = -1 * _Direction.X * _Acceleration;
-        tmpVelocity.Z = -1 * _Direction.Z * _Acceleration;
         //}
         //tmpVelocity.X += _Player.GetFloorNormal().X * _Acceleration * (float) delta;
         //tmpVelocity.Z += _Player.GetFloorNormal().Z * _Acceleration * (float) delta;
@@ -92,7 +92,7 @@ public partial class PlayerRolling : State
         {
             tmpVelocity.Y = JumpSpeed;
         }
-        _Player.Velocity += tmpVelocity;
+        _Player.Velocity = new Vector3(tmpVelocity.X,_Player.Velocity.Y + tmpVelocity.Y,tmpVelocity.Z);
         if (Input.IsActionJustPressed("jump") || _CurAirTime > AirDelay)
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Falling");
