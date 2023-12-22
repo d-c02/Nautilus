@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=33 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
@@ -50,9 +50,6 @@ transitions = ["BlendTree", "Fall", SubResource("AnimationNodeStateMachineTransi
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oa0f5"]
 animation = &"Fall"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uev0u"]
-animation = &"Fall2"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cx28e"]
 animation = &"Idle"
@@ -112,8 +109,6 @@ states/Dive/node = SubResource("AnimationNodeStateMachine_5qxld")
 states/Dive/position = Vector2(566, 215)
 states/Fall/node = SubResource("AnimationNodeAnimation_oa0f5")
 states/Fall/position = Vector2(450, 154)
-states/Fall2/node = SubResource("AnimationNodeAnimation_uev0u")
-states/Fall2/position = Vector2(601, 102)
 states/Idle/node = SubResource("AnimationNodeAnimation_cx28e")
 states/Idle/position = Vector2(214, 6)
 states/Jump/node = SubResource("AnimationNodeAnimation_4yv8h")
@@ -139,26 +134,19 @@ _AnimationTree = NodePath("AnimationTree")
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.8, 0)
 
 [node name="Skeleton3D" parent="Pivot/Character/RobotArmature" index="0"]
-bones/0/position = Vector3(-8.23828e-17, 0.895389, 0.0298551)
-bones/0/rotation = Quaternion(0.00306853, 1.19209e-07, 3.65776e-10, 0.999995)
-bones/1/rotation = Quaternion(0.0519233, -8.95117e-15, 1.23795e-08, 0.998651)
-bones/4/position = Vector3(-3.07805e-16, 0.169905, -0.0110947)
-bones/4/rotation = Quaternion(0.243979, -1.15669e-07, -3.00912e-08, 0.96978)
+bones/0/rotation = Quaternion(0.0149092, 1.19196e-07, 1.77731e-09, 0.999889)
+bones/1/rotation = Quaternion(0.0294489, -1.52236e-14, 7.02117e-09, 0.999566)
+bones/4/rotation = Quaternion(0.239899, -1.15728e-07, -2.86316e-08, 0.970798)
 bones/5/rotation = Quaternion(0.00821238, -4.94291e-14, -1.95798e-09, 0.999966)
-bones/8/position = Vector3(9.98253e-08, 0.0795713, 0.418698)
-bones/8/rotation = Quaternion(0.00393964, 1.19208e-07, -4.69641e-10, 0.999992)
-bones/9/rotation = Quaternion(-0.350011, -0.325197, -0.613359, 0.628912)
-bones/10/rotation = Quaternion(0.185133, 0.717099, 0.143994, 0.656324)
+bones/10/rotation = Quaternion(0.25398, 0.695662, 0.239305, 0.627919)
 bones/12/rotation = Quaternion(0.0209349, 0.0170217, -0.0176714, 0.99948)
-bones/13/rotation = Quaternion(-0.350011, 0.325197, 0.613359, 0.628912)
-bones/14/rotation = Quaternion(0.201129, -0.712747, -0.161747, 0.652209)
+bones/14/rotation = Quaternion(0.284264, -0.681875, -0.273741, 0.615878)
 bones/16/rotation = Quaternion(0.0209349, -0.0170217, 0.0176714, 0.99948)
-bones/17/rotation = Quaternion(0.922916, 0.0176557, -0.0125008, 0.384393)
-bones/18/rotation = Quaternion(0.653076, 0.0138256, 0.0175468, 0.756963)
-bones/19/rotation = Quaternion(-0.525849, 0.00282157, -0.00510512, 0.850558)
-bones/21/rotation = Quaternion(0.987273, -0.0250963, 0.0344168, 0.153227)
-bones/22/rotation = Quaternion(-0.00618428, -0.00495338, -0.0269892, 0.999604)
-bones/23/rotation = Quaternion(-0.525849, -0.00282156, 0.00510514, 0.850558)
+bones/17/rotation = Quaternion(0.866667, 0.0159147, -0.0146238, 0.498419)
+bones/18/rotation = Quaternion(0.827637, 0.0155082, 0.0114936, 0.560932)
+bones/19/rotation = Quaternion(-0.615735, 0.00335742, -0.00475978, 0.787931)
+bones/21/rotation = Quaternion(0.975373, -0.0289113, 0.0587189, 0.210629)
+bones/23/rotation = Quaternion(-0.615735, -0.00335744, 0.00475984, 0.787931)
 
 [node name="StandardCollider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089457, 0)

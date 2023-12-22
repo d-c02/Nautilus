@@ -59,7 +59,7 @@ public partial class PlayerFalling : State
             floatFall = false;
         }
 
-        if (Input.IsActionPressed("dive"))
+        if (Input.IsActionJustPressed("dive"))
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Diving");
         }
@@ -69,8 +69,9 @@ public partial class PlayerFalling : State
     {
         var direction = Vector3.Zero;
 
-        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition).Normalized();
+        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition);
         cameraDifferenceVector.Y = 0;
+        cameraDifferenceVector = cameraDifferenceVector.Normalized();
         Vector3 orthogonalCameraDifferenceVector = new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X);
 
         if (Input.IsActionPressed("move_right"))

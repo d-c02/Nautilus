@@ -15,9 +15,6 @@ public partial class PlayerGrounded : State
     public int JumpSpeed { get; set; } = 28;
 
     [Export]
-    private float _FloorDistTolerance;
-
-    [Export]
     private Camera3D _Camera;
 
     [Export]
