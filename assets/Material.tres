@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://kgiub576ohc3"]
+
+[ext_resource type="Texture2D" uid="uid://ck2umrsouvs8e" path="res://assets/3DGodotRobot_GodotPalette.png" id="1_xt1ae"]
+
+[resource]
+resource_name = "Material"
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_xt1ae")
+roughness = 0.4

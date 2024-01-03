@@ -1,8 +1,10 @@
-[gd_scene load_steps=33 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=35 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
+[ext_resource type="Material" uid="uid://br6p3wifwdmhn" path="res://transparentplayershader.tres" id="3_jwmgk"]
 [ext_resource type="Script" path="res://StateMachine.cs" id="3_n2ags"]
+[ext_resource type="Material" uid="uid://d18vttaokc2ig" path="res://assets/Material.002.tres" id="4_27igw"]
 [ext_resource type="Script" path="res://PlayerGrounded.cs" id="4_d1kly"]
 [ext_resource type="Script" path="res://PlayerFalling.cs" id="5_43yp8"]
 [ext_resource type="Script" path="res://PlayerRolling.cs" id="6_q81j6"]
@@ -136,17 +138,30 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.
 [node name="Skeleton3D" parent="Pivot/Character/RobotArmature" index="0"]
 bones/0/rotation = Quaternion(0.0149092, 1.19196e-07, 1.77731e-09, 0.999889)
 bones/1/rotation = Quaternion(0.0294489, -1.52236e-14, 7.02117e-09, 0.999566)
-bones/4/rotation = Quaternion(0.239899, -1.15728e-07, -2.86316e-08, 0.970798)
+bones/4/rotation = Quaternion(0.225222, -1.16127e-07, -3.05363e-08, 0.974308)
 bones/5/rotation = Quaternion(0.00821238, -4.94291e-14, -1.95798e-09, 0.999966)
-bones/10/rotation = Quaternion(0.25398, 0.695662, 0.239305, 0.627919)
+bones/10/rotation = Quaternion(0.211584, 0.711762, 0.191292, 0.641899)
 bones/12/rotation = Quaternion(0.0209349, 0.0170217, -0.0176714, 0.99948)
-bones/14/rotation = Quaternion(0.284264, -0.681875, -0.273741, 0.615878)
+bones/14/rotation = Quaternion(0.211508, -0.711787, -0.191206, 0.641921)
 bones/16/rotation = Quaternion(0.0209349, -0.0170217, 0.0176714, 0.99948)
 bones/17/rotation = Quaternion(0.866667, 0.0159147, -0.0146238, 0.498419)
-bones/18/rotation = Quaternion(0.827637, 0.0155082, 0.0114936, 0.560932)
+bones/18/rotation = Quaternion(0.788004, 0.0151791, 0.0131308, 0.615343)
 bones/19/rotation = Quaternion(-0.615735, 0.00335742, -0.00475978, 0.787931)
-bones/21/rotation = Quaternion(0.975373, -0.0289113, 0.0587189, 0.210629)
+bones/21/rotation = Quaternion(0.984165, -0.0211723, 0.0148872, 0.175353)
 bones/23/rotation = Quaternion(-0.615735, -0.00335744, 0.00475984, 0.787931)
+
+[node name="Bottom" parent="Pivot/Character/RobotArmature/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("3_jwmgk")
+
+[node name="Chest" parent="Pivot/Character/RobotArmature/Skeleton3D" index="1"]
+surface_material_override/0 = ExtResource("3_jwmgk")
+
+[node name="Face" parent="Pivot/Character/RobotArmature/Skeleton3D" index="2"]
+surface_material_override/0 = ExtResource("3_jwmgk")
+surface_material_override/1 = ExtResource("4_27igw")
+
+[node name="Llimbs and head" parent="Pivot/Character/RobotArmature/Skeleton3D" index="3"]
+surface_material_override/0 = ExtResource("3_jwmgk")
 
 [node name="StandardCollider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089457, 0)

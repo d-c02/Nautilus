@@ -25,7 +25,7 @@ public partial class PlayerDiving : State
     private Vector3 _targetVelocity;
 
     [Export]
-    public double _FloatTime = 0.3;
+    public double FloatTime = 0.3;
 
     private double _CurFloatTime;
 
@@ -34,6 +34,20 @@ public partial class PlayerDiving : State
     private float _SlowdownConstant = 1.0f;
 
     private bool _IsFalling = false;
+
+    [Export]
+    public double GrabTime = 0.2;
+
+    [Export]
+    public double GrabCooldown = 0.5; 
+
+    private double _CurGrabTime;
+
+    private bool _IsGrabbing;
+
+    private bool _GrabBuffer = false;
+
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -50,8 +64,11 @@ public partial class PlayerDiving : State
         _SpeedEntered = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z).Length();
         _SpeedEntered /= _SlowdownConstant;
         _Player.FloorSnapLength = 0f;
+        _CurGrabTime = 0;
         _Player._SetAnimState("Dive");
         _IsFalling = false;
+        _IsGrabbing = false;
+        _GrabBuffer = false;
     }
 
     public override void Exit()
@@ -107,12 +124,7 @@ public partial class PlayerDiving : State
         float tmpAccel = FallAcceleration;
         _targetVelocity.Y = _targetVelocity.Y - (float)(tmpAccel * delta);
 
-        if (_Player.IsOnFloor())
-        {
-            _targetVelocity.Y = 0;
-
-        }
-        if (_CurFloatTime < _FloatTime)
+        if (_CurFloatTime < FloatTime)
         {
             _Player.Velocity = Vector3.Zero;
         }
@@ -121,16 +133,35 @@ public partial class PlayerDiving : State
             _Player.Velocity = _targetVelocity;
             _IsFalling = true;
         }
-        else
-        {
 
+        if (Input.IsActionJustPressed("dive") && _GrabBuffer)
+        {
+            _IsGrabbing = true;
+        }
+        if (_IsGrabbing)
+        {
+            _CurGrabTime += delta;
+        }
+        if (_CurGrabTime > GrabCooldown)
+        {
+            _IsGrabbing = false;
+            _CurGrabTime = 0;
         }
         _CurFloatTime += delta;
+        _GrabBuffer = true;
         if (_Player.IsOnFloor())
         {
             //_Player.Velocity = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
-            _Player.Velocity = Vector3.Zero;
-            EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
+            if (_IsGrabbing && _CurGrabTime < GrabTime)
+            {
+                _Player.Velocity = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
+                EmitSignal(SignalName.Transitioned, this.Name + "", "Rolling");
+            }
+            else
+            {
+                _Player.Velocity = Vector3.Zero;
+                EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
+            }
         }
     }
 }

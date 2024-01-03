@@ -19,7 +19,7 @@ public partial class PlayerRolling : State
     private double _CurTime = 0;
 
     [Export]
-    private float _Speed = 30f;
+    private float _Speed = 40f;
 
     [Export]
     public int JumpSpeed { get; set; } = 20;
@@ -35,8 +35,11 @@ public partial class PlayerRolling : State
     private Vector3 tmpVelocity = Vector3.Zero;
 
     private Vector3 _Direction;
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+
+    [Export]
+    private float _SlowdownConstant = 4.0f;
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
     }
 
@@ -44,17 +47,29 @@ public partial class PlayerRolling : State
     {
 		_StandardCollider.Disabled = true;
 		_RollingCollider.Disabled = false;
-        _Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+        //_Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+        Vector3 tmpDir = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
+        if (tmpDir.Length() < 0.1)
+        {
+            _Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+            _Direction.X *= -1;
+            _Direction.Z *= -1;
+        }
+        else
+        {
+            _Direction = tmpDir.Normalized();
+        }
         _Player._SetAnimState("Roll");
-        tmpVelocity.X = -1 * _Direction.X * _Speed + _Player.Velocity.X;
-        tmpVelocity.Z = -1 * _Direction.Z * _Speed + _Player.Velocity.Z;
+        tmpVelocity.X = _Direction.X * _Speed + _Player.Velocity.X / _SlowdownConstant;
+        tmpVelocity.Z = _Direction.Z * _Speed + _Player.Velocity.Z / _SlowdownConstant;
+        _CurTime = 0;
+        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _Direction, Vector3.Up);
     }
 
     public override void Exit()
     {
         _StandardCollider.Disabled = false;
         _RollingCollider.Disabled = true;
-        _CurTime = 0;
     }
 
     public override void Update(double delta)
@@ -91,6 +106,7 @@ public partial class PlayerRolling : State
         if (Input.IsActionJustPressed("jump"))
         {
             tmpVelocity.Y = JumpSpeed;
+            _Player.FloorSnapLength = 0f;
         }
         _Player.Velocity = new Vector3(tmpVelocity.X,_Player.Velocity.Y + tmpVelocity.Y,tmpVelocity.Z);
         if (Input.IsActionJustPressed("jump") || _CurAirTime > AirDelay)

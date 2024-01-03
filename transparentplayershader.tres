@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://br6p3wifwdmhn"]
+
+[ext_resource type="Material" uid="uid://kgiub576ohc3" path="res://assets/Material.tres" id="1_t4bw4"]
+
+[resource]
+render_priority = -1
+next_pass = ExtResource("1_t4bw4")
+transparency = 1
+depth_draw_mode = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0, 0, 0.321569, 1)
