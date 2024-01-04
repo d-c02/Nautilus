@@ -79,7 +79,7 @@ public partial class PlayerRolling : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (_CurTime > _ActiveTime)
+        if (_CurTime > _ActiveTime && _Player.IsOnFloor())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
         }
@@ -96,7 +96,7 @@ public partial class PlayerRolling : State
         if (!_Player.IsOnFloor())
         {
             _CurAirTime += delta;
-            tmpVelocity.Y -= -1 * Gravity * (float) delta;
+            tmpVelocity.Y -= Gravity * (float) delta;
         }
         else
         {
@@ -105,8 +105,8 @@ public partial class PlayerRolling : State
         }
         if (Input.IsActionJustPressed("jump"))
         {
-            tmpVelocity.Y = JumpSpeed;
-            _Player.FloorSnapLength = 0f;
+            tmpVelocity.Y = 0;
+            _Player.Velocity = new Vector3(_Player.Velocity.X, JumpSpeed, _Player.Velocity.Z);
         }
         _Player.Velocity = new Vector3(tmpVelocity.X,_Player.Velocity.Y + tmpVelocity.Y,tmpVelocity.Z);
         if (Input.IsActionJustPressed("jump") || _CurAirTime > AirDelay)
