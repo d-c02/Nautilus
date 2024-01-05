@@ -9,6 +9,9 @@ public partial class CameraPivot : Node3D
     [Export]
     public float RotationSpeed { get; set; } = 0.01f;
 
+    [Export]
+    public Camera3D _Camera;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -44,5 +47,10 @@ public partial class CameraPivot : Node3D
         _targetRotation.X = _targetRotation.X + direction.X * RotationSpeed;
         _targetRotation.Y = _targetRotation.Y + direction.Y * RotationSpeed;
         Rotation = _targetRotation;
+    }
+
+    public Vector3 GetMovementVector(Vector3 playerPosition)
+    {
+        return playerPosition - _Camera.GlobalPosition;
     }
 }

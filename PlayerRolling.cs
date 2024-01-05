@@ -79,7 +79,7 @@ public partial class PlayerRolling : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (_CurTime > _ActiveTime && _Player.IsOnFloor())
+        if (_CurTime > _ActiveTime && _Player.IsOnFloor() && !Input.IsActionJustPressed("jump"))
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
         }

@@ -14,8 +14,11 @@ public partial class PlayerGrounded : State
     [Export]
     public int JumpSpeed { get; set; } = 28;
 
+    //[Export]
+    //private Camera3D _Camera;
+
     [Export]
-    private Camera3D _Camera;
+    private CameraPivot _Camera;
 
     [Export]
     public double RollDelay { get; set; } = 0.8; //How long you need to wait between rolls
@@ -44,7 +47,7 @@ public partial class PlayerGrounded : State
     public override void PhysicsUpdate(double delta)
     {
         var direction = Vector3.Zero;
-        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition);
+        Vector3 cameraDifferenceVector = _Camera.GetMovementVector(_Player.GlobalPosition);
         cameraDifferenceVector.Y = 0;    
         cameraDifferenceVector = cameraDifferenceVector.Normalized();
         cameraDifferenceVector.Y = 0;

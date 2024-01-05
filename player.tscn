@@ -180,7 +180,7 @@ _InitialState = NodePath("Grounded")
 [node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("4_d1kly")
 _Player = NodePath("../..")
-_Camera = NodePath("../../CameraPivot/Camera3D")
+_Camera = NodePath("../../CameraPivot")
 
 [node name="Falling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("5_43yp8")
