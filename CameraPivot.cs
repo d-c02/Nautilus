@@ -25,9 +25,11 @@ public partial class CameraPivot : Node3D
     [Export]
     private double _AnimationLerpSpeed = 1.5;
 
-    private Vector3 _TransitionPos;
+    //private Vector3 _TransitionPos;
 
-    private Vector3 _TransitionRot;
+    //private Vector3 _TransitionRot;
+
+    private Transform3D _TransitionTransform;
 
     private Vector2 _PanDir;
 
@@ -36,6 +38,10 @@ public partial class CameraPivot : Node3D
     private int _CurMode = (int) CameraModes.FreeLook;
 
     private Vector3 _CurZoneMovementVector;
+
+    private Vector3 _PrevMovementVector;
+
+    private float _JoystickDeadzone = 0.1f;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -81,8 +87,9 @@ public partial class CameraPivot : Node3D
         if (_Transitioning)
         {
             _TransitionTime += delta * _AnimationLerpSpeed;
-            _TransitionCamera.GlobalPosition = _TransitionPos.Lerp(_NextCamera.GlobalPosition, (float)_TransitionTime);
-            _TransitionCamera.GlobalRotation = _TransitionRot.Lerp(_NextCamera.GlobalRotation, (float)_TransitionTime);
+            //_TransitionCamera.GlobalPosition = _TransitionPos.Lerp(_NextCamera.GlobalPosition, (float)_TransitionTime);
+            //_TransitionCamera.GlobalRotation = _TransitionRot.Lerp(_NextCamera.GlobalRotation, (float)_TransitionTime);
+            _TransitionCamera.GlobalTransform = _TransitionTransform.InterpolateWith(_NextCamera.GlobalTransform, (float)_TransitionTime);
             if (_TransitionTime >= 1.0)
             {
                 _Transitioning = false;
@@ -97,26 +104,53 @@ public partial class CameraPivot : Node3D
     // Current idea to implement is make it so that the previous movement vector is maintained until the transition is finished.
     public Vector3 GetMovementVector(Vector3 playerPosition)
     {
-        if (_CurMode == (int) CameraModes.FreeLook)
+        if (!_Transitioning)
         {
-            return playerPosition - _Camera.GlobalPosition;
-        }
-        else if (_CurMode == (int) CameraModes.Fixed)
-        {
-            return _CurZoneMovementVector;
+            if (_CurMode == (int)CameraModes.FreeLook)
+            {
+                _PrevMovementVector = playerPosition - _Camera.GlobalPosition;
+                return playerPosition - _Camera.GlobalPosition;
+            }
+            else if (_CurMode == (int)CameraModes.Fixed)
+            {
+                if (!IsPlayerMoving())
+                {
+                    _PrevMovementVector = _CurZoneMovementVector;
+                    return _CurZoneMovementVector;
+                }
+                else
+                {
+                    return _PrevMovementVector;
+                }
+            }
+            else
+            {
+                return Vector3.Zero; //Placeholder, remember to change as this will probably cause bugs.
+            }
         }
         else
         {
-            return Vector3.Zero; //Placeholder, remember to change as this will probably cause bugs.
+            return _PrevMovementVector;
         }
+    }
+
+    private bool IsPlayerMoving()
+    {
+        float right = Input.GetActionStrength("move_right");
+        float left = Input.GetActionStrength("move_left");
+        float back = Input.GetActionStrength("move_back");
+        float forward = Input.GetActionStrength("move_forward");
+        return (right > _JoystickDeadzone || left > _JoystickDeadzone || back > _JoystickDeadzone || forward > _JoystickDeadzone);
     }
 
     private void CameraZoneEntered(CameraZone zone)
     {
-        _TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
-        _TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
-        _TransitionCamera.GlobalPosition = _TransitionPos;
-        _TransitionCamera.GlobalRotation = _TransitionRot;
+        //_TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
+        //_TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
+        _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+        //_TransitionCamera.GlobalPosition = _TransitionPos;
+        //_TransitionCamera.GlobalRotation = _TransitionRot;
+        _TransitionCamera.GlobalTransform = _TransitionTransform;
         _TransitionCamera.MakeCurrent();
         _NextCamera = zone.Camera;
         _CurZoneMovementVector = zone._MovementVector;
@@ -127,10 +161,12 @@ public partial class CameraPivot : Node3D
 
     private void CameraZoneExit(CameraZone zone)
     {
-        _TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
-        _TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
-        _TransitionCamera.GlobalPosition = _TransitionPos;
-        _TransitionCamera.GlobalRotation = _TransitionRot;
+        //_TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
+        //_TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
+        _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+        //_TransitionCamera.GlobalPosition = _TransitionPos;
+        //_TransitionCamera.GlobalRotation = _TransitionRot;
+        _TransitionCamera.GlobalTransform = _TransitionTransform;
         _TransitionCamera.MakeCurrent();
         _NextCamera = _Camera;
         _TransitionTime = 0;
