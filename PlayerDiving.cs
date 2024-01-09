@@ -20,7 +20,7 @@ public partial class PlayerDiving : State
     public int FallImpulse = 20;
 
     [Export]
-    private Camera3D _Camera;
+    private CameraPivot _Camera;
 
     private Vector3 _targetVelocity;
 
@@ -86,7 +86,7 @@ public partial class PlayerDiving : State
     {
         var direction = Vector3.Zero;
 
-        Vector3 cameraDifferenceVector = (_Player.GlobalPosition - _Camera.GlobalPosition);
+        Vector3 cameraDifferenceVector = _Camera.GetMovementVector(_Player.GlobalPosition);
         cameraDifferenceVector.Y = 0;
         cameraDifferenceVector = cameraDifferenceVector.Normalized();
         Vector3 orthogonalCameraDifferenceVector = new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X);

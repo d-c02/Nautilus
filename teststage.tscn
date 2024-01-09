@@ -1,13 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://dy23edwi76go7"]
+[gd_scene load_steps=9 format=3 uid="uid://dy23edwi76go7"]
 
 [ext_resource type="PackedScene" uid="uid://b4djs5yvwadac" path="res://player.tscn" id="1_rgunv"]
 [ext_resource type="PackedScene" uid="uid://wg0hqki78hb7" path="res://testmap.glb" id="2_uqp13"]
+[ext_resource type="Script" path="res://CameraZone.cs" id="3_frbn6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_43h3d"]
 size = Vector3(100, 2, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_715gb"]
 size = Vector3(100, 2, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cry7p"]
+size = Vector3(13.795, 11.43, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ef5w0"]
+albedo_color = Color(1, 0.168627, 0.278431, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_y7bp6"]
+material = SubResource("StandardMaterial3D_ef5w0")
+size = Vector3(13.795, 0.005, 30)
 
 [node name="TestStage" type="Node3D"]
 
@@ -29,3 +40,23 @@ transform = Transform3D(1, 0, 0, 0, 0.0572155, 0.998362, 0, -0.998362, 0.0572155
 
 [node name="testmap" parent="." instance=ExtResource("2_uqp13")]
 transform = Transform3D(7.435, 0, 0, 0, 7.435, 0, 0, 0, 7.435, 6.08287, -74.5534, 155.312)
+
+[node name="CameraZone" type="Node3D" parent="." node_paths=PackedStringArray("_Area", "Camera", "_Player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.3464, -71.4121, 100.987)
+script = ExtResource("3_frbn6")
+_Area = NodePath("Area3D")
+Camera = NodePath("Camera3D")
+_MovementVector = Vector3(-1, 0, 0)
+_Player = NodePath("../Player")
+
+[node name="Area3D" type="Area3D" parent="CameraZone"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraZone/Area3D"]
+shape = SubResource("BoxShape3D_cry7p")
+
+[node name="Camera3D" type="Camera3D" parent="CameraZone"]
+transform = Transform3D(-4.12151e-08, -0.333099, 0.942892, -1.45602e-08, 0.942892, 0.333099, -1, 2.39808e-14, -4.37114e-08, 15.9067, 2.47659, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.4851, -75.0417, 100.883)
+mesh = SubResource("BoxMesh_y7bp6")

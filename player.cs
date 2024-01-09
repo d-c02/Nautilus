@@ -35,4 +35,9 @@ public partial class player : CharacterBody3D
         float maxRunSpeed = 2.0f;
         _AnimationTree.Set("parameters/Run/TimeScale/scale", Math.Min(Math.Max(val/normalizer, minRunSpeed), maxRunSpeed));
     }
+
+    public CameraPivot GetCameraPivot()
+    {
+        return GetNode<CameraPivot>("CameraPivot");
+    }
 }

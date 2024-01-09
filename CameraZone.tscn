@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7xjmmryrwj66"]
+
+[ext_resource type="Script" path="res://CameraZone.cs" id="1_h475i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ya3cr"]
+
+[node name="CameraZone" type="Node3D" node_paths=PackedStringArray("_Area", "Camera")]
+script = ExtResource("1_h475i")
+_Area = NodePath("Area3D")
+Camera = NodePath("Camera3D")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_ya3cr")
+
+[node name="Camera3D" type="Camera3D" parent="."]

@@ -185,7 +185,7 @@ _Camera = NodePath("../../CameraPivot")
 [node name="Falling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("5_43yp8")
 _Player = NodePath("../..")
-_Camera = NodePath("../../CameraPivot/Camera3D")
+_Camera = NodePath("../../CameraPivot")
 
 [node name="Rolling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Pivot", "_StandardCollider", "_RollingCollider")]
 script = ExtResource("6_q81j6")
@@ -197,7 +197,7 @@ _RollingCollider = NodePath("../../RollCollider")
 [node name="Diving" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("7_5jmgu")
 _Player = NodePath("../..")
-_Camera = NodePath("../../CameraPivot/Camera3D")
+_Camera = NodePath("../../CameraPivot")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_aa8f1")

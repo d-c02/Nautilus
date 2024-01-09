@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using static Godot.TextServer;
 
 public partial class CameraPivot : Node3D
 {
@@ -12,45 +13,128 @@ public partial class CameraPivot : Node3D
     [Export]
     public Camera3D _Camera;
 
+    [Export]
+    private Camera3D _TransitionCamera;
+
+    private bool _Transitioning = false;
+
+    private double _TransitionTime = 0.0;
+
+    private Camera3D _NextCamera;
+
+    [Export]
+    private double _AnimationLerpSpeed = 1.5;
+
+    private Vector3 _TransitionPos;
+
+    private Vector3 _TransitionRot;
+
+    private Vector2 _PanDir;
+
+    private enum CameraModes {FreeLook, Fixed, OnTrack};
+
+    private int _CurMode = (int) CameraModes.FreeLook;
+
+    private Vector3 _CurZoneMovementVector;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
         _targetRotation = Rotation;
-	}
+    }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-        var direction = Vector2.Zero;
-
-        if (Input.IsActionPressed("tilt_camera_right"))
+        _PanDir = Vector2.Zero;
+        if (_CurMode == (int) CameraModes.FreeLook && !_Transitioning)
         {
-            direction.Y += 1.0f;//times GetActionStrength("tilt_camera_right")
+            if (Input.IsActionPressed("tilt_camera_right"))
+            {
+                _PanDir.Y += 1.0f * Input.GetActionStrength("tilt_camera_right");//times GetActionStrength("tilt_camera_right")
+            }
+            if (Input.IsActionPressed("tilt_camera_left"))
+            {
+                _PanDir.Y -= 1.0f * Input.GetActionStrength("tilt_camera_left");
+            }
+            if (Input.IsActionPressed("tilt_camera_up"))
+            {
+                _PanDir.X -= 1.0f * Input.GetActionStrength("tilt_camera_up");
+            }
+            if (Input.IsActionPressed("tilt_camera_down"))
+            {
+                _PanDir.X += 1.0f * Input.GetActionStrength("tilt_camera_down");
+            }
+            if (_PanDir != Vector2.Zero)
+            {
+                //direction = direction.Normalized();
+            }
+            _targetRotation.X = _targetRotation.X + _PanDir.X * RotationSpeed;
+            _targetRotation.Y = _targetRotation.Y + _PanDir.Y * RotationSpeed;
         }
-        if (Input.IsActionPressed("tilt_camera_left"))
-        {
-            direction.Y -= 1.0f;
-        }
-        if (Input.IsActionPressed("tilt_camera_up"))
-        {
-            direction.X -= 1.0f;
-        }
-        if (Input.IsActionPressed("tilt_camera_down"))
-        {
-            direction.X += 1.0f;
-        }
-        if (direction != Vector2.Zero)
-        {
-            direction = direction.Normalized();
-        }
-
-        _targetRotation.X = _targetRotation.X + direction.X * RotationSpeed;
-        _targetRotation.Y = _targetRotation.Y + direction.Y * RotationSpeed;
-        Rotation = _targetRotation;
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        Rotation = _targetRotation;
+
+        if (_Transitioning)
+        {
+            _TransitionTime += delta * _AnimationLerpSpeed;
+            _TransitionCamera.GlobalPosition = _TransitionPos.Lerp(_NextCamera.GlobalPosition, (float)_TransitionTime);
+            _TransitionCamera.GlobalRotation = _TransitionRot.Lerp(_NextCamera.GlobalRotation, (float)_TransitionTime);
+            if (_TransitionTime >= 1.0)
+            {
+                _Transitioning = false;
+                _NextCamera.MakeCurrent();
+                _TransitionTime = 0.0;
+            }
+        }
+    }
+
+
+    // Bug exists where if player walks backwards onto fixed area, difference in movement vector will cause sickening rubber-banding. Think of clever fix.
+    // Current idea to implement is make it so that the previous movement vector is maintained until the transition is finished.
     public Vector3 GetMovementVector(Vector3 playerPosition)
     {
-        return playerPosition - _Camera.GlobalPosition;
+        if (_CurMode == (int) CameraModes.FreeLook)
+        {
+            return playerPosition - _Camera.GlobalPosition;
+        }
+        else if (_CurMode == (int) CameraModes.Fixed)
+        {
+            return _CurZoneMovementVector;
+        }
+        else
+        {
+            return Vector3.Zero; //Placeholder, remember to change as this will probably cause bugs.
+        }
+    }
+
+    private void CameraZoneEntered(CameraZone zone)
+    {
+        _TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
+        _TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
+        _TransitionCamera.GlobalPosition = _TransitionPos;
+        _TransitionCamera.GlobalRotation = _TransitionRot;
+        _TransitionCamera.MakeCurrent();
+        _NextCamera = zone.Camera;
+        _CurZoneMovementVector = zone._MovementVector;
+        _TransitionTime = 0;
+        _Transitioning = true;
+        _CurMode = (int)CameraModes.Fixed;
+    }
+
+    private void CameraZoneExit(CameraZone zone)
+    {
+        _TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
+        _TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
+        _TransitionCamera.GlobalPosition = _TransitionPos;
+        _TransitionCamera.GlobalRotation = _TransitionRot;
+        _TransitionCamera.MakeCurrent();
+        _NextCamera = _Camera;
+        _TransitionTime = 0;
+        _Transitioning = true;
+        _CurMode = (int)CameraModes.FreeLook;
     }
 }
