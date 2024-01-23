@@ -14,7 +14,7 @@ public partial class OnTrackCameraZone : CameraZone
         return (int)CameraZones.OnTrack;
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
         float playerOffset = _Path.Curve.GetClosestOffset(_Player.ToLocal(_Path.GlobalPosition));
         _CameraPivot.GlobalPosition = _Path.ToGlobal(-1 * _Path.Curve.SampleBaked(playerOffset));

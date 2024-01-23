@@ -45,7 +45,7 @@ public partial class CameraPivot : Node3D
 
     private int _CurZones = 0;
 
-    private CameraZone _PrevZone;
+    private CameraZone _NextZone;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -84,6 +84,8 @@ public partial class CameraPivot : Node3D
         }
     }
 
+
+    //TODO: All camera stuff needs to be moved to _Process. However this causes visual bugs.
     public override void _PhysicsProcess(double delta)
     {
         Rotation = _targetRotation;
@@ -102,8 +104,6 @@ public partial class CameraPivot : Node3D
             }
         }
     }
-
-
     public Vector3 GetMovementVector(Vector3 playerPosition)
     {
         if (!_Transitioning)
@@ -149,16 +149,19 @@ public partial class CameraPivot : Node3D
     {
         //_TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
         //_TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
-        _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
-        //_TransitionCamera.GlobalPosition = _TransitionPos;
-        //_TransitionCamera.GlobalRotation = _TransitionRot;
-        _TransitionCamera.GlobalTransform = _TransitionTransform;
-        _TransitionCamera.MakeCurrent();
-        _NextCamera = zone.Camera;
-        _CurZoneMovementVector = zone._MovementVector;
-        _TransitionTime = 0;
-        _Transitioning = true;
-        _CurMode = (int)CameraModes.Fixed;
+        _NextZone = zone;
+        if (_CurZones < 1)
+        {
+            _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+            _TransitionCamera.GlobalTransform = _TransitionTransform;
+            _TransitionCamera.MakeCurrent();
+            _TransitionTime = 0;
+            _Transitioning = true;
+            _CurZoneMovementVector = zone._MovementVector;
+            _CurMode = (int)CameraModes.Fixed;
+            _NextCamera = zone.Camera;
+        }
+        
         _CurZones++;
     }
 
@@ -178,16 +181,20 @@ public partial class CameraPivot : Node3D
             _Transitioning = true;
             _CurMode = (int)CameraModes.FreeLook;
         }
-        //else
-        //{
-        //    _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
-        //    _TransitionCamera.GlobalTransform = _TransitionTransform;
-        //    _TransitionCamera.MakeCurrent();
-        //    _NextCamera = zone.Camera;
-        //    _TransitionTime = 0;
-        //    _Transitioning = true;
-        //    _CurMode = (int)CameraModes.Fixed;
-        //}
+        else
+        {
+            if (_NextZone != zone)
+            {
+                _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+                _TransitionCamera.GlobalTransform = _TransitionTransform;
+                _TransitionCamera.MakeCurrent();
+                _CurZoneMovementVector = _NextZone._MovementVector;
+                _NextCamera = _NextZone.Camera;
+                _TransitionTime = 0;
+                _Transitioning = true;
+                _CurMode = (int)CameraModes.Fixed;
+            }
+        }
         _CurZones--;
     }
 }
