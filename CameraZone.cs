@@ -14,13 +14,15 @@ public partial class CameraZone : Node3D
     public Vector3 _MovementVector;
 
     [Export]
-    private player _Player;
+    protected player _Player;
 
     [Signal]
     public delegate void CameraZoneEnterEventHandler(CameraZone zone);
 
     [Signal]
     public delegate void CameraZoneExitEventHandler(CameraZone zone);
+
+    public enum CameraZones { Fixed, OnTrack };
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -38,11 +40,19 @@ public partial class CameraZone : Node3D
 
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        
+    }
+    public virtual int GetZoneType()
+    {
+        return (int) CameraZones.Fixed;
+    }
+
     private void OnAreaEntered(Node3D other)
     {
         if (other.Name == "Player")
 		{
-			//_Camera.MakeCurrent();
             EmitSignal(SignalName.CameraZoneEnter, this);
 		}
     }
@@ -52,7 +62,6 @@ public partial class CameraZone : Node3D
         if (other.Name == "Player")
         {
             EmitSignal(SignalName.CameraZoneExit, this);
-            //_Camera.ClearCurrent();
         }
     }
 }

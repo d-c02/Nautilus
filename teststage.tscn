@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dy23edwi76go7"]
+[gd_scene load_steps=14 format=3 uid="uid://dy23edwi76go7"]
 
 [ext_resource type="PackedScene" uid="uid://b4djs5yvwadac" path="res://player.tscn" id="1_rgunv"]
 [ext_resource type="PackedScene" uid="uid://wg0hqki78hb7" path="res://testmap.glb" id="2_uqp13"]
 [ext_resource type="Script" path="res://CameraZone.cs" id="3_frbn6"]
+[ext_resource type="Script" path="res://OnTrackCameraZone.cs" id="4_x3npt"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_43h3d"]
 size = Vector3(100, 2, 100)
@@ -19,6 +20,22 @@ albedo_color = Color(1, 0.168627, 0.278431, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_y7bp6"]
 material = SubResource("StandardMaterial3D_ef5w0")
 size = Vector3(13.795, 0.005, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l4fo3"]
+albedo_color = Color(0.105882, 0.0980392, 0.811765, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uxdf6"]
+size = Vector3(13.795, 0.005, 93.235)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7pelb"]
+size = Vector3(13.795, 9.405, 93.235)
+
+[sub_resource type="Curve3D" id="Curve3D_fbhu8"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0.075, 0, -46.465, 0, 0, 0, 0, 0, 0, -0.044, -0.105, 46.518),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
 
 [node name="TestStage" type="Node3D"]
 
@@ -41,6 +58,12 @@ transform = Transform3D(1, 0, 0, 0, 0.0572155, 0.998362, 0, -0.998362, 0.0572155
 [node name="testmap" parent="." instance=ExtResource("2_uqp13")]
 transform = Transform3D(7.435, 0, 0, 0, 7.435, 0, 0, 0, 7.435, 6.08287, -74.5534, 155.312)
 
+[node name="Torus" parent="testmap" index="5"]
+transform = Transform3D(1.59935, 0, 0, 0, 1.59935, 0, 0, 0, 1.59935, -0.775295, -0.456726, 6.05918)
+
+[node name="Sphere" parent="testmap" index="9"]
+transform = Transform3D(1.99236, 0, 0, 0, 1.99236, 0, 0, 0, 1.99236, -1.55611, -0.795018, -0.261436)
+
 [node name="CameraZone" type="Node3D" parent="." node_paths=PackedStringArray("_Area", "Camera", "_Player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.3464, -71.4121, 100.987)
 script = ExtResource("3_frbn6")
@@ -60,3 +83,35 @@ transform = Transform3D(-4.12151e-08, -0.333099, 0.942892, -1.45602e-08, 0.94289
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.4851, -75.0417, 100.883)
 mesh = SubResource("BoxMesh_y7bp6")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.3978, -74.9663, 162.696)
+material_override = SubResource("StandardMaterial3D_l4fo3")
+mesh = SubResource("BoxMesh_uxdf6")
+
+[node name="CameraZone2" type="Node3D" parent="." node_paths=PackedStringArray("_Path", "_CameraPivot", "_Area", "Camera", "_Player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.398, -67.7548, 162.696)
+script = ExtResource("4_x3npt")
+_Path = NodePath("Path3D")
+_CameraPivot = NodePath("CameraPivot")
+_Area = NodePath("Area3D")
+Camera = NodePath("CameraPivot/Camera3D")
+_MovementVector = Vector3(0, 0, 1)
+_Player = NodePath("../Player")
+
+[node name="Area3D" type="Area3D" parent="CameraZone2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraZone2/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.45385, 0)
+shape = SubResource("BoxShape3D_7pelb")
+
+[node name="Path3D" type="Path3D" parent="CameraZone2"]
+curve = SubResource("Curve3D_fbhu8")
+
+[node name="CameraPivot" type="Node3D" parent="CameraZone2"]
+transform = Transform3D(-1, 6.33091e-08, -6.02885e-08, 0, 0.68962, 0.724172, 8.74228e-08, 0.724172, -0.68962, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraZone2/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.8931)
+
+[editable path="testmap"]

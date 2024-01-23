@@ -43,6 +43,10 @@ public partial class CameraPivot : Node3D
 
     private float _JoystickDeadzone = 0.1f;
 
+    private int _CurZones = 0;
+
+    private CameraZone _PrevZone;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -100,8 +104,6 @@ public partial class CameraPivot : Node3D
     }
 
 
-    // Bug exists where if player walks backwards onto fixed area, difference in movement vector will cause sickening rubber-banding. Think of clever fix.
-    // Current idea to implement is make it so that the previous movement vector is maintained until the transition is finished.
     public Vector3 GetMovementVector(Vector3 playerPosition)
     {
         if (!_Transitioning)
@@ -157,20 +159,35 @@ public partial class CameraPivot : Node3D
         _TransitionTime = 0;
         _Transitioning = true;
         _CurMode = (int)CameraModes.Fixed;
+        _CurZones++;
     }
 
     private void CameraZoneExit(CameraZone zone)
     {
         //_TransitionPos = GetViewport().GetCamera3D().GlobalPosition;
         //_TransitionRot = GetViewport().GetCamera3D().GlobalRotation;
-        _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
-        //_TransitionCamera.GlobalPosition = _TransitionPos;
-        //_TransitionCamera.GlobalRotation = _TransitionRot;
-        _TransitionCamera.GlobalTransform = _TransitionTransform;
-        _TransitionCamera.MakeCurrent();
-        _NextCamera = _Camera;
-        _TransitionTime = 0;
-        _Transitioning = true;
-        _CurMode = (int)CameraModes.FreeLook;
+        if (_CurZones <= 1)
+        {
+            _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+            //_TransitionCamera.GlobalPosition = _TransitionPos;
+            //_TransitionCamera.GlobalRotation = _TransitionRot;
+            _TransitionCamera.GlobalTransform = _TransitionTransform;
+            _TransitionCamera.MakeCurrent();
+            _NextCamera = _Camera;
+            _TransitionTime = 0;
+            _Transitioning = true;
+            _CurMode = (int)CameraModes.FreeLook;
+        }
+        //else
+        //{
+        //    _TransitionTransform = GetViewport().GetCamera3D().GlobalTransform;
+        //    _TransitionCamera.GlobalTransform = _TransitionTransform;
+        //    _TransitionCamera.MakeCurrent();
+        //    _NextCamera = zone.Camera;
+        //    _TransitionTime = 0;
+        //    _Transitioning = true;
+        //    _CurMode = (int)CameraModes.Fixed;
+        //}
+        _CurZones--;
     }
 }

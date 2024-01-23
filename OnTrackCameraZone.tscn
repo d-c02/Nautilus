@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://tmtfykw67644"]
+
+[ext_resource type="PackedScene" uid="uid://b7xjmmryrwj66" path="res://CameraZone.tscn" id="1_cg2pb"]
+[ext_resource type="Script" path="res://OnTrackCameraZone.cs" id="2_yaryt"]
+
+[sub_resource type="Curve3D" id="Curve3D_fbhu8"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0.075, 0, -54.84, 0, 0, 0, 0, 0, 0, 0, 0, 41.23),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[node name="CameraZone" node_paths=PackedStringArray("_Path") instance=ExtResource("1_cg2pb")]
+script = ExtResource("2_yaryt")
+_Path = NodePath("Path3D")
+
+[node name="Path3D" type="Path3D" parent="." index="2"]
+curve = SubResource("Curve3D_fbhu8")

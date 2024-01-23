@@ -14,12 +14,12 @@ public partial class PlayerRolling : State
 	private CollisionShape3D _RollingCollider;
 
     [Export]
-    private double _ActiveTime = 0.5f;
+    private double _ActiveTime = 0.4f;
 
     private double _CurTime = 0;
 
     [Export]
-    private float _Speed = 40f;
+    private float _Speed = 35f;
 
     [Export]
     public int JumpSpeed { get; set; } = 20;
