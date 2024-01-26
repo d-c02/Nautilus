@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://onhapgqgx0qt"]
+[gd_scene load_steps=2 format=3 uid="uid://onhapgqgx0qt"]
 
 [ext_resource type="Script" path="res://CameraPivot.cs" id="1_cae7f"]
-[ext_resource type="Script" path="res://StateMachine.cs" id="2_ycs2h"]
 
 [node name="CameraPivot" type="Node3D" node_paths=PackedStringArray("_Camera", "_TransitionCamera")]
 transform = Transform3D(1, 0, 0, 0, 0.886203, 0.463296, 0, -0.463296, 0.886203, 0, 0, 0)
@@ -11,8 +10,6 @@ _TransitionCamera = NodePath("TransitionCamera")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
-
-[node name="StateMachine" type="Node" parent="."]
-script = ExtResource("2_ycs2h")
+current = true
 
 [node name="TransitionCamera" type="Camera3D" parent="."]

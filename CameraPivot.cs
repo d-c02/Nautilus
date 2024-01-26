@@ -51,6 +51,7 @@ public partial class CameraPivot : Node3D
     public override void _Ready()
 	{
         _targetRotation = Rotation;
+        _Camera.MakeCurrent();
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

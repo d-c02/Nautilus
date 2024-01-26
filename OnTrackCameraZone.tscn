@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b7xjmmryrwj66" path="res://CameraZone.tscn" id="1_cg2pb"]
 [ext_resource type="Script" path="res://OnTrackCameraZone.cs" id="2_yaryt"]
 
-[sub_resource type="Curve3D" id="Curve3D_fbhu8"]
+[sub_resource type="Curve3D" id="Curve3D_t4tee"]
 _data = {
 "points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0.075, 0, -54.84, 0, 0, 0, 0, 0, 0, 0, 0, 41.23),
 "tilts": PackedFloat32Array(0, 0)
@@ -15,4 +15,4 @@ script = ExtResource("2_yaryt")
 _Path = NodePath("Path3D")
 
 [node name="Path3D" type="Path3D" parent="." index="2"]
-curve = SubResource("Curve3D_fbhu8")
+curve = SubResource("Curve3D_t4tee")

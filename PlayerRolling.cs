@@ -45,8 +45,8 @@ public partial class PlayerRolling : State
 
     public override void Enter()
     {
-		_StandardCollider.Disabled = true;
-		_RollingCollider.Disabled = false;
+		//_StandardCollider.Disabled = true;
+		//_RollingCollider.Disabled = false;
         //_Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
         Vector3 tmpDir = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
         if (tmpDir.Length() < 0.1)
@@ -68,8 +68,8 @@ public partial class PlayerRolling : State
 
     public override void Exit()
     {
-        _StandardCollider.Disabled = false;
-        _RollingCollider.Disabled = true;
+        //_StandardCollider.Disabled = false;
+        //_RollingCollider.Disabled = true;
     }
 
     public override void Update(double delta)

@@ -199,6 +199,8 @@ script = ExtResource("7_5jmgu")
 _Player = NodePath("../..")
 _Camera = NodePath("../../CameraPivot")
 
+[node name="Node" type="Node" parent="StateMachine"]
+
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_aa8f1")
 anim_player = NodePath("../Pivot/Character/AnimationPlayer")

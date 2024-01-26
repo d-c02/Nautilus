@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Security.AccessControl;
 
 public partial class player : CharacterBody3D
@@ -27,6 +28,7 @@ public partial class player : CharacterBody3D
         _AnimationNodeStateMachinePlayback.Travel(state);
     }
 
+    //Makes the run animation go faster or slower depending on player speed, but normalizes it so there are no extremes.
     public void _SetRunTimeScale(float val)
     {
         //_RunTimeScale.Set("TimeScale", val);
