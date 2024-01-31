@@ -19,10 +19,6 @@ public partial class PlayerFalling : State
     [Export]
     public int FallAcceleration { get; set; } = 50;
 
-
-    //    [Export]
-    //    private Camera3D _Camera;
-
     [Export]
     private CameraPivot _Camera;
 
@@ -48,11 +44,17 @@ public partial class PlayerFalling : State
             _InJumpTransition = true;
         }
         _Player.FloorSnapLength = 0f;
+        Vector3 PVelocityXZ = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
+        if (PVelocityXZ > Vector3.Zero)
+        {
+            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + PVelocityXZ, Vector3.Up);
+        }
     }
 
     public override void Exit()
     {
         _Player.FloorSnapLength = 0.85f;
+        _Player.InSpecialJumpTransition = false;
     }
 
     public override void Update(double delta)
@@ -75,6 +77,7 @@ public partial class PlayerFalling : State
         cameraDifferenceVector.Y = 0;
         cameraDifferenceVector = cameraDifferenceVector.Normalized();
         Vector3 orthogonalCameraDifferenceVector = new Vector3(-1 * cameraDifferenceVector.Z, 0, cameraDifferenceVector.X);
+
 
         if (Input.IsActionPressed("move_right"))
         {
@@ -133,24 +136,28 @@ public partial class PlayerFalling : State
         if (_Player.IsOnFloor())
         {
             _targetVelocity.Y = 0;
-        
         }
-        if (_targetVelocity.Y > 0)
+        if (!_Player.InSpecialJumpTransition)
         {
-            _Player._SetAnimState("Jump");
-        }
-        else
-        {
-        if (!_InJumpTransition)
-        {
-            _Player._SetAnimState("Fall");
-        }
-            _Player._SetAnimState("JumpTransition");
+            if (_targetVelocity.Y > 0)
+            {
+
+                _Player.SetAnimState("Jump");
+            }
+            else
+            {
+                _Player.SetAnimState("JumpTransition");
+            }
         }
         _Player.Velocity = _targetVelocity;
         if (_Player.IsOnFloor())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
+        }
+
+        if (_Player.IsOnWall())
+        {
+            EmitSignal(SignalName.Transitioned, this.Name + "", "WallSlide");
         }
     }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=47 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://PlayerFalling.cs" id="5_43yp8"]
 [ext_resource type="Script" path="res://PlayerRolling.cs" id="6_q81j6"]
 [ext_resource type="Script" path="res://PlayerDiving.cs" id="7_5jmgu"]
+[ext_resource type="Script" path="res://PlayerWallSliding.cs" id="10_2260g"]
 [ext_resource type="PackedScene" uid="uid://onhapgqgx0qt" path="res://camera.tscn" id="10_k4kc6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dsk1a"]
@@ -18,6 +19,9 @@ height = 1.79243
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_raa5u"]
 radius = 0.387
 height = 0.796634
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t6yvb"]
+animation = &"Dive"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qn8tk"]
 animation = &"Fall2"
@@ -72,13 +76,17 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u6lut"]
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_voxp7"]
+switch_mode = 2
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_3nwqv"]
 states/End/position = Vector2(600, 100)
 states/Fall/node = SubResource("AnimationNodeAnimation_80d3q")
 states/Fall/position = Vector2(448, 100)
 states/Jump2/node = SubResource("AnimationNodeAnimation_p8e01")
 states/Jump2/position = Vector2(322, 95)
-transitions = ["Jump2", "Fall", SubResource("AnimationNodeStateMachineTransition_eef4q"), "Start", "Jump2", SubResource("AnimationNodeStateMachineTransition_u6lut")]
+transitions = ["Jump2", "Fall", SubResource("AnimationNodeStateMachineTransition_eef4q"), "Start", "Jump2", SubResource("AnimationNodeStateMachineTransition_u6lut"), "Fall", "End", SubResource("AnimationNodeStateMachineTransition_voxp7")]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6gq8h"]
 animation = &"GroundSlide"
@@ -106,23 +114,66 @@ nodes/TimeScale/position = Vector2(360, 80)
 nodes/output/position = Vector2(680, 60)
 node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"Animation"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oh172"]
+animation = &"Fall"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jjsq7"]
+animation = &"WallJump"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0g35u"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x1ik5"]
+xfade_time = 0.5
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2ux37"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_2h3i2"]
+states/Fall/node = SubResource("AnimationNodeAnimation_oh172")
+states/Fall/position = Vector2(548, 102)
+states/WallJump/node = SubResource("AnimationNodeAnimation_jjsq7")
+states/WallJump/position = Vector2(389, 104)
+transitions = ["Start", "WallJump", SubResource("AnimationNodeStateMachineTransition_0g35u"), "WallJump", "Fall", SubResource("AnimationNodeStateMachineTransition_x1ik5"), "Fall", "End", SubResource("AnimationNodeStateMachineTransition_2ux37")]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xvpvp"]
+animation = &"WallSlide"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vgvpf"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_l7fct"]
+switch_mode = 2
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_aa8f1"]
+states/Airdive/node = SubResource("AnimationNodeAnimation_t6yvb")
+states/Airdive/position = Vector2(226.951, 177.76)
 states/Dive/node = SubResource("AnimationNodeStateMachine_5qxld")
-states/Dive/position = Vector2(566, 215)
+states/Dive/position = Vector2(460, 145)
 states/Fall/node = SubResource("AnimationNodeAnimation_oa0f5")
-states/Fall/position = Vector2(450, 154)
+states/Fall/position = Vector2(856, 153)
 states/Idle/node = SubResource("AnimationNodeAnimation_cx28e")
 states/Idle/position = Vector2(214, 6)
 states/Jump/node = SubResource("AnimationNodeAnimation_4yv8h")
 states/Jump/position = Vector2(340, 153)
 states/JumpTransition/node = SubResource("AnimationNodeStateMachine_3nwqv")
-states/JumpTransition/position = Vector2(240, 220)
+states/JumpTransition/position = Vector2(675, 220)
 states/Roll/node = SubResource("AnimationNodeBlendTree_boua7")
 states/Roll/position = Vector2(374, 87)
 states/Run/node = SubResource("AnimationNodeBlendTree_ibgos")
 states/Run/position = Vector2(374, 6)
 states/Start/position = Vector2(57, 138)
-graph_offset = Vector2(-160, 35)
+states/WallJumpTransition/node = SubResource("AnimationNodeStateMachine_2h3i2")
+states/WallJumpTransition/position = Vector2(675, 145)
+states/WallSlide/node = SubResource("AnimationNodeAnimation_xvpvp")
+states/WallSlide/position = Vector2(569, 87)
+transitions = ["WallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_vgvpf"), "JumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_l7fct")]
+graph_offset = Vector2(-172.049, 37.7597)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_AnimationTree")]
 floor_constant_speed = true
@@ -137,19 +188,18 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.
 
 [node name="Skeleton3D" parent="Pivot/Character/RobotArmature" index="0"]
 bones/0/rotation = Quaternion(0.0149092, 1.19196e-07, 1.77731e-09, 0.999889)
-bones/1/rotation = Quaternion(0.0294489, -1.52097e-14, 7.02117e-09, 0.999566)
-bones/4/rotation = Quaternion(0.00540027, -1.19208e-07, -6.43763e-10, 0.999985)
+bones/1/rotation = Quaternion(0.0294489, -1.52236e-14, 7.02117e-09, 0.999566)
+bones/4/rotation = Quaternion(0.226816, -1.16085e-07, -3.03463e-08, 0.973938)
 bones/5/rotation = Quaternion(0.00821238, -4.94291e-14, -1.95798e-09, 0.999966)
-bones/8/rotation = Quaternion(0.00393964, 1.19208e-07, -4.69641e-10, 0.999992)
-bones/10/rotation = Quaternion(0.0194111, 0.743406, -0.0238222, 0.668134)
+bones/10/rotation = Quaternion(0.216211, 0.710179, 0.196521, 0.64053)
 bones/12/rotation = Quaternion(0.0209349, 0.0170217, -0.0176714, 0.99948)
-bones/14/rotation = Quaternion(0.0194111, -0.743406, 0.0238222, 0.668134)
+bones/14/rotation = Quaternion(0.219515, -0.709023, -0.200257, 0.639529)
 bones/16/rotation = Quaternion(0.0209349, -0.0170217, 0.0176714, 0.99948)
-bones/17/rotation = Quaternion(0.999647, 0.0210636, -0.00512356, 0.0153314)
-bones/18/rotation = Quaternion(-0.00618425, 0.00495339, 0.0269892, 0.999604)
-bones/21/rotation = Quaternion(0.999647, -0.0210636, 0.00512357, 0.0153314)
-bones/22/rotation = Quaternion(-0.00618428, -0.00495338, -0.0269892, 0.999604)
-bones/23/rotation = Quaternion(-0.492808, -0.00262191, 0.00521295, 0.870119)
+bones/17/rotation = Quaternion(0.866667, 0.0159147, -0.0146238, 0.498419)
+bones/18/rotation = Quaternion(0.792458, 0.0152179, 0.0129568, 0.609599)
+bones/19/rotation = Quaternion(-0.615735, 0.00335742, -0.00475978, 0.787931)
+bones/21/rotation = Quaternion(0.983372, -0.0220116, 0.0196242, 0.179191)
+bones/23/rotation = Quaternion(-0.615735, -0.00335744, 0.00475984, 0.787931)
 
 [node name="Bottom" parent="Pivot/Character/RobotArmature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("3_jwmgk")
@@ -199,7 +249,9 @@ script = ExtResource("7_5jmgu")
 _Player = NodePath("../..")
 _Camera = NodePath("../../CameraPivot")
 
-[node name="Node" type="Node" parent="StateMachine"]
+[node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player")]
+script = ExtResource("10_2260g")
+_Player = NodePath("../..")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_aa8f1")

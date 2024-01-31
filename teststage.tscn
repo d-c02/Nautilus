@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dy23edwi76go7"]
+[gd_scene load_steps=14 format=3 uid="uid://dy23edwi76go7"]
 
 [ext_resource type="PackedScene" uid="uid://b4djs5yvwadac" path="res://player.tscn" id="1_rgunv"]
 [ext_resource type="PackedScene" uid="uid://wg0hqki78hb7" path="res://testmap.glb" id="2_uqp13"]
@@ -36,14 +36,6 @@ _data = {
 "tilts": PackedFloat32Array(0, 0)
 }
 point_count = 2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d72cq"]
-albedo_color = Color(0.580392, 0, 0.635294, 1)
-metallic = 0.45
-metallic_specular = 0.55
-roughness = 0.15
-
-[sub_resource type="SphereMesh" id="SphereMesh_a7cse"]
 
 [node name="TestStage" type="Node3D"]
 
@@ -121,11 +113,5 @@ transform = Transform3D(-1, 6.33091e-08, -6.02885e-08, -1.72229e-08, 0.533438, 0
 
 [node name="Camera3D" type="Camera3D" parent="CameraZone2/CameraPivot"]
 transform = Transform3D(1, -2.84217e-14, 3.55271e-15, -1.42109e-14, 1, 0, 1.77636e-14, 0, 1, 0, 1.52588e-05, 11)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CameraZone2/CameraPivot/Camera3D"]
-transform = Transform3D(-1, -1.72229e-08, 8.57095e-08, 6.33091e-08, 0.533438, 0.845839, -6.02885e-08, 0.845839, -0.533438, 0, -2.28882e-05, -11)
-material_override = SubResource("StandardMaterial3D_d72cq")
-mesh = SubResource("SphereMesh_a7cse")
-skeleton = NodePath("../../..")
 
 [editable path="testmap"]

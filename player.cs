@@ -13,6 +13,8 @@ public partial class player : CharacterBody3D
     private AnimationNodeStateMachinePlayback _AnimationNodeStateMachinePlayback;
 
     private AnimationNodeTimeScale _RunTimeScale;
+
+    public bool InSpecialJumpTransition = false;
     public override void _Ready()
     {
         _AnimationNodeStateMachinePlayback = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
@@ -23,13 +25,19 @@ public partial class player : CharacterBody3D
         MoveAndSlide();
     }
 
-    public void _SetAnimState(string state)
+    //TODO: Anim state stuff needs to be changed to stringnames instead of strings to optimize performance.
+    public void SetAnimState(string state)
     {
         _AnimationNodeStateMachinePlayback.Travel(state);
     }
 
+    public StringName GetAnimState()
+    {
+        return _AnimationNodeStateMachinePlayback.GetCurrentNode();
+    }
+
     //Makes the run animation go faster or slower depending on player speed, but normalizes it so there are no extremes.
-    public void _SetRunTimeScale(float val)
+    public void SetRunTimeScale(float val)
     {
         //_RunTimeScale.Set("TimeScale", val);
         float normalizer = 10;

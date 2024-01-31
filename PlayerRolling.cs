@@ -59,7 +59,7 @@ public partial class PlayerRolling : State
         {
             _Direction = tmpDir.Normalized();
         }
-        _Player._SetAnimState("Roll");
+        _Player.SetAnimState("Roll");
         tmpVelocity.X = _Direction.X * _Speed + _Player.Velocity.X / _SlowdownConstant;
         tmpVelocity.Z = _Direction.Z * _Speed + _Player.Velocity.Z / _SlowdownConstant;
         _CurTime = 0;

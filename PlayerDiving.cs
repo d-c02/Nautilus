@@ -65,7 +65,7 @@ public partial class PlayerDiving : State
         _SpeedEntered /= _SlowdownConstant;
         _Player.FloorSnapLength = 0f;
         _CurGrabTime = 0;
-        _Player._SetAnimState("Dive");
+        _Player.SetAnimState("Dive");
         _IsFalling = false;
         _IsGrabbing = false;
         _GrabBuffer = false;
