@@ -31,23 +31,27 @@ public partial class PlayerDiving : State
 
     private float _SpeedEntered;
 
-    private float _SlowdownConstant = 1.0f;
-
     private bool _IsFalling = false;
 
     [Export]
-    public double GrabTime = 0.2;
+    private double _GrabTime = 0.2;
 
     [Export]
-    public double GrabCooldown = 0.5; 
+    private double _GrabCooldown = 0.5; 
 
     private double _CurGrabTime;
 
-    private bool _IsGrabbing;
+    private bool _IsRollGrabbing;
+
+    private bool _IsJumpGrabbing;
 
     private bool _GrabBuffer = false;
 
+    [Export]
+    private int _JumpImpulse = 35;
 
+    [Export]
+    private float _SlowdownConstant = 6.0f;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -62,12 +66,12 @@ public partial class PlayerDiving : State
     {
         _targetVelocity = new Vector3(_Player.Velocity.X, _Player.Velocity.Y - FallImpulse, _Player.Velocity.Z);
         _SpeedEntered = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z).Length();
-        _SpeedEntered /= _SlowdownConstant;
         _Player.FloorSnapLength = 0f;
         _CurGrabTime = 0;
         _Player.SetAnimState("Dive");
         _IsFalling = false;
-        _IsGrabbing = false;
+        _IsRollGrabbing = false;
+        _IsJumpGrabbing = false;
         _GrabBuffer = false;
     }
 
@@ -82,6 +86,7 @@ public partial class PlayerDiving : State
 
     }
 
+    //TODO: Move input stuff to Update()
     public override void PhysicsUpdate(double delta)
     {
         var direction = Vector3.Zero;
@@ -134,17 +139,22 @@ public partial class PlayerDiving : State
             _IsFalling = true;
         }
 
-        if (Input.IsActionJustPressed("dive") && _GrabBuffer)
+        if (Input.IsActionJustPressed("dive") && _GrabBuffer && !_IsJumpGrabbing)
         {
-            _IsGrabbing = true;
+            _IsRollGrabbing = true;
         }
-        if (_IsGrabbing)
+        if (Input.IsActionJustPressed("jump") && _GrabBuffer && !_IsRollGrabbing)
+        {
+            _IsJumpGrabbing = true;
+        }
+        if (_IsRollGrabbing || _IsJumpGrabbing)
         {
             _CurGrabTime += delta;
         }
-        if (_CurGrabTime > GrabCooldown)
+        if (_CurGrabTime > _GrabCooldown)
         {
-            _IsGrabbing = false;
+            _IsRollGrabbing = false;
+            _IsJumpGrabbing = false;
             _CurGrabTime = 0;
         }
         _CurFloatTime += delta;
@@ -152,10 +162,17 @@ public partial class PlayerDiving : State
         if (_Player.IsOnFloor())
         {
             //_Player.Velocity = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
-            if (_IsGrabbing && _CurGrabTime < GrabTime)
+            if (_IsRollGrabbing && _CurGrabTime < _GrabTime)
             {
                 _Player.Velocity = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
                 EmitSignal(SignalName.Transitioned, this.Name + "", "Rolling");
+            }
+            else if (_IsJumpGrabbing && _CurGrabTime < _GrabTime)
+            {
+                _Player.Velocity = new Vector3(_Player.Velocity.X / _SlowdownConstant, _JumpImpulse, _Player.Velocity.Z / _SlowdownConstant);
+                _Player.SetAnimState("TallJumpTransition");
+                _Player.InSpecialJumpTransition = true;
+                EmitSignal(SignalName.Transitioned, this.Name + "", "Falling");
             }
             else
             {

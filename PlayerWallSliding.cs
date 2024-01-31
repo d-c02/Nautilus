@@ -62,12 +62,14 @@ public partial class PlayerWallSliding : State
 
         _Player.Velocity = _TargetVelocity;
 
+        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position - _Player.GetWallNormal(), Vector3.Up);
+
         if (_Jumping)
         {
             Vector3 ExitVelocity = _VerticalExitSpeed * _WallNormal;
             ExitVelocity.Y = _JumpSpeed;
             _Player.Velocity = ExitVelocity;
-            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _WallNormal, Vector3.Up);
+            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + new Vector3(_WallNormal.X, 0, _WallNormal.Z), Vector3.Up);
             //_Player.SetAnimState("WallJumpTransition");
             _Player.SetAnimState("WallJumpTransition");
             _Player.InSpecialJumpTransition = true;
@@ -76,6 +78,7 @@ public partial class PlayerWallSliding : State
         if (_Player.IsOnFloor())
         {
             _Player.Velocity = Vector3.Zero;
+            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + new Vector3(_WallNormal.X, 0, _WallNormal.Z), Vector3.Up);
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
         }
         else if (!_Player.IsOnWall())

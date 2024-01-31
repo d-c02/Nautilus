@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://b4djs5yvwadac"]
+[gd_scene load_steps=56 format=3 uid="uid://b4djs5yvwadac"]
 
 [ext_resource type="Script" path="res://player.cs" id="1_x7hwy"]
 [ext_resource type="PackedScene" uid="uid://de02ggtfbw366" path="res://assets/3DGodotRobot.glb" id="2_n58eb"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://PlayerDiving.cs" id="7_5jmgu"]
 [ext_resource type="Script" path="res://PlayerWallSliding.cs" id="10_2260g"]
 [ext_resource type="PackedScene" uid="uid://onhapgqgx0qt" path="res://camera.tscn" id="10_k4kc6"]
+[ext_resource type="Script" path="res://AirDive.cs" id="11_s8qvs"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dsk1a"]
 radius = 0.387151
@@ -52,6 +53,7 @@ states/BlendTree/node = SubResource("AnimationNodeBlendTree_5irfq")
 states/BlendTree/position = Vector2(377, 43)
 states/Fall/node = SubResource("AnimationNodeAnimation_4uidt")
 states/Fall/position = Vector2(541, 100)
+states/Start/position = Vector2(201, 100)
 transitions = ["BlendTree", "Fall", SubResource("AnimationNodeStateMachineTransition_hovue"), "Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_rvj8s")]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oa0f5"]
@@ -114,6 +116,36 @@ nodes/TimeScale/position = Vector2(360, 80)
 nodes/output/position = Vector2(680, 60)
 node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"Animation"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ojpj8"]
+animation = &"Fall"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uysum"]
+animation = &"Jump3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w48u8"]
+advance_mode = 2
+
+[sub_resource type="Curve" id="Curve_u6xm5"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.38835, 0), 0.0, 0.0, 0, 0, Vector2(0.970874, 1), 0.260211, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wktnb"]
+xfade_time = 2.0
+xfade_curve = SubResource("Curve_u6xm5")
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gr052"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_imgtg"]
+states/Fall/node = SubResource("AnimationNodeAnimation_ojpj8")
+states/Fall/position = Vector2(606, 100)
+states/Jump3/node = SubResource("AnimationNodeAnimation_uysum")
+states/Jump3/position = Vector2(352, 100)
+transitions = ["Start", "Jump3", SubResource("AnimationNodeStateMachineTransition_w48u8"), "Jump3", "Fall", SubResource("AnimationNodeStateMachineTransition_wktnb"), "Fall", "End", SubResource("AnimationNodeStateMachineTransition_gr052")]
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oh172"]
 animation = &"Fall"
 
@@ -150,9 +182,13 @@ advance_mode = 2
 switch_mode = 2
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_btn1g"]
+switch_mode = 2
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_aa8f1"]
-states/Airdive/node = SubResource("AnimationNodeAnimation_t6yvb")
-states/Airdive/position = Vector2(226.951, 177.76)
+states/AirDive/node = SubResource("AnimationNodeAnimation_t6yvb")
+states/AirDive/position = Vector2(460, 200.76)
 states/Dive/node = SubResource("AnimationNodeStateMachine_5qxld")
 states/Dive/position = Vector2(460, 145)
 states/Fall/node = SubResource("AnimationNodeAnimation_oa0f5")
@@ -168,12 +204,14 @@ states/Roll/position = Vector2(374, 87)
 states/Run/node = SubResource("AnimationNodeBlendTree_ibgos")
 states/Run/position = Vector2(374, 6)
 states/Start/position = Vector2(57, 138)
+states/TallJumpTransition/node = SubResource("AnimationNodeStateMachine_imgtg")
+states/TallJumpTransition/position = Vector2(960.951, 220)
 states/WallJumpTransition/node = SubResource("AnimationNodeStateMachine_2h3i2")
-states/WallJumpTransition/position = Vector2(675, 145)
+states/WallJumpTransition/position = Vector2(650, 145)
 states/WallSlide/node = SubResource("AnimationNodeAnimation_xvpvp")
 states/WallSlide/position = Vector2(569, 87)
-transitions = ["WallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_vgvpf"), "JumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_l7fct")]
-graph_offset = Vector2(-172.049, 37.7597)
+transitions = ["WallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_vgvpf"), "JumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_l7fct"), "TallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_btn1g")]
+graph_offset = Vector2(-84.0493, 57.7596)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_AnimationTree")]
 floor_constant_speed = true
@@ -187,19 +225,24 @@ _AnimationTree = NodePath("AnimationTree")
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.8, 0)
 
 [node name="Skeleton3D" parent="Pivot/Character/RobotArmature" index="0"]
-bones/0/rotation = Quaternion(0.0149092, 1.19196e-07, 1.77731e-09, 0.999889)
-bones/1/rotation = Quaternion(0.0294489, -1.52236e-14, 7.02117e-09, 0.999566)
-bones/4/rotation = Quaternion(0.226816, -1.16085e-07, -3.03463e-08, 0.973938)
-bones/5/rotation = Quaternion(0.00821238, -4.94291e-14, -1.95798e-09, 0.999966)
-bones/10/rotation = Quaternion(0.216211, 0.710179, 0.196521, 0.64053)
+bones/0/position = Vector3(-3.5256e-16, 0.861288, 0.0298551)
+bones/0/rotation = Quaternion(0.722618, 8.24031e-08, 8.61428e-08, 0.691247)
+bones/1/rotation = Quaternion(0.002259, -7.42462e-15, 5.38589e-10, 0.999997)
+bones/4/position = Vector3(2.8056e-14, 0.151501, -0.011741)
+bones/4/rotation = Quaternion(-0.269951, -1.14783e-07, 3.21807e-08, 0.962874)
+bones/5/rotation = Quaternion(-0.432784, -6.90004e-14, 1.03184e-07, 0.901498)
+bones/8/position = Vector3(9.97907e-08, 0.0611575, 0.418553)
+bones/9/rotation = Quaternion(-0.571079, -0.556854, 0.439094, -0.413496)
+bones/10/rotation = Quaternion(-0.356441, 0.617847, -0.433107, 0.551029)
 bones/12/rotation = Quaternion(0.0209349, 0.0170217, -0.0176714, 0.99948)
-bones/14/rotation = Quaternion(0.219515, -0.709023, -0.200257, 0.639529)
+bones/13/rotation = Quaternion(-0.571079, 0.556854, -0.439094, -0.413496)
+bones/14/rotation = Quaternion(-0.356441, -0.617847, 0.433107, 0.551029)
 bones/16/rotation = Quaternion(0.0209349, -0.0170217, 0.0176714, 0.99948)
-bones/17/rotation = Quaternion(0.866667, 0.0159147, -0.0146238, 0.498419)
-bones/18/rotation = Quaternion(0.792458, 0.0152179, 0.0129568, 0.609599)
-bones/19/rotation = Quaternion(-0.615735, 0.00335742, -0.00475978, 0.787931)
-bones/21/rotation = Quaternion(0.983372, -0.0220116, 0.0196242, 0.179191)
-bones/23/rotation = Quaternion(-0.615735, -0.00335744, 0.00475984, 0.787931)
+bones/17/rotation = Quaternion(0.996647, 0.0688627, 0.00237967, 0.044122)
+bones/18/rotation = Quaternion(0.0996995, 0.00778531, 0.0263047, 0.994639)
+bones/19/rotation = Quaternion(-0.14418, 0.000587101, -0.00582002, 0.989534)
+bones/21/rotation = Quaternion(0.994654, -0.0689025, -0.000110545, 0.0769164)
+bones/23/rotation = Quaternion(-0.0926899, -0.000284834, 0.00584663, 0.995678)
 
 [node name="Bottom" parent="Pivot/Character/RobotArmature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("3_jwmgk")
@@ -252,6 +295,9 @@ _Camera = NodePath("../../CameraPivot")
 [node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player")]
 script = ExtResource("10_2260g")
 _Player = NodePath("../..")
+
+[node name="AirDive" type="Node" parent="StateMachine"]
+script = ExtResource("11_s8qvs")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_aa8f1")

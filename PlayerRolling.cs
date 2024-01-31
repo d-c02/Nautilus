@@ -28,7 +28,7 @@ public partial class PlayerRolling : State
     private int Gravity { get; set; } = 50;
 
     [Export]
-    public double AirDelay { get; set; } = 0.1; //How long you need to be in the air before going into falling state
+    public double AirDelay { get; set; } = 0.15; //How long you need to be in the air before going into falling state
 
     private double _CurAirTime;
 
