@@ -11,7 +11,7 @@
 [ext_resource type="Script" path="res://PlayerDiving.cs" id="7_5jmgu"]
 [ext_resource type="Script" path="res://PlayerWallSliding.cs" id="10_2260g"]
 [ext_resource type="PackedScene" uid="uid://onhapgqgx0qt" path="res://camera.tscn" id="10_k4kc6"]
-[ext_resource type="Script" path="res://AirDive.cs" id="11_s8qvs"]
+[ext_resource type="Script" path="res://PlayerAirDiving.cs" id="11_ijiek"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dsk1a"]
 radius = 0.387151
@@ -225,24 +225,20 @@ _AnimationTree = NodePath("AnimationTree")
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.8, 0)
 
 [node name="Skeleton3D" parent="Pivot/Character/RobotArmature" index="0"]
-bones/0/position = Vector3(-3.5256e-16, 0.861288, 0.0298551)
-bones/0/rotation = Quaternion(0.722618, 8.24031e-08, 8.61428e-08, 0.691247)
-bones/1/rotation = Quaternion(0.002259, -7.42462e-15, 5.38589e-10, 0.999997)
-bones/4/position = Vector3(2.8056e-14, 0.151501, -0.011741)
-bones/4/rotation = Quaternion(-0.269951, -1.14783e-07, 3.21807e-08, 0.962874)
-bones/5/rotation = Quaternion(-0.432784, -6.90004e-14, 1.03184e-07, 0.901498)
-bones/8/position = Vector3(9.97907e-08, 0.0611575, 0.418553)
-bones/9/rotation = Quaternion(-0.571079, -0.556854, 0.439094, -0.413496)
-bones/10/rotation = Quaternion(-0.356441, 0.617847, -0.433107, 0.551029)
+bones/0/rotation = Quaternion(0.0149092, 1.19196e-07, 1.77731e-09, 0.999889)
+bones/1/rotation = Quaternion(0.0294489, -1.52097e-14, 7.02117e-09, 0.999566)
+bones/4/rotation = Quaternion(0.00540027, -1.19208e-07, -6.43763e-10, 0.999985)
+bones/5/rotation = Quaternion(0.00821238, -4.94291e-14, -1.95798e-09, 0.999966)
+bones/8/rotation = Quaternion(0.00393964, 1.19208e-07, -4.69641e-10, 0.999992)
+bones/10/rotation = Quaternion(0.0194111, 0.743406, -0.0238222, 0.668134)
 bones/12/rotation = Quaternion(0.0209349, 0.0170217, -0.0176714, 0.99948)
-bones/13/rotation = Quaternion(-0.571079, 0.556854, -0.439094, -0.413496)
-bones/14/rotation = Quaternion(-0.356441, -0.617847, 0.433107, 0.551029)
+bones/14/rotation = Quaternion(0.0194111, -0.743406, 0.0238222, 0.668134)
 bones/16/rotation = Quaternion(0.0209349, -0.0170217, 0.0176714, 0.99948)
-bones/17/rotation = Quaternion(0.996647, 0.0688627, 0.00237967, 0.044122)
-bones/18/rotation = Quaternion(0.0996995, 0.00778531, 0.0263047, 0.994639)
-bones/19/rotation = Quaternion(-0.14418, 0.000587101, -0.00582002, 0.989534)
-bones/21/rotation = Quaternion(0.994654, -0.0689025, -0.000110545, 0.0769164)
-bones/23/rotation = Quaternion(-0.0926899, -0.000284834, 0.00584663, 0.995678)
+bones/17/rotation = Quaternion(0.999647, 0.0210636, -0.00512356, 0.0153314)
+bones/18/rotation = Quaternion(-0.00618425, 0.00495339, 0.0269892, 0.999604)
+bones/21/rotation = Quaternion(0.999647, -0.0210636, 0.00512357, 0.0153314)
+bones/22/rotation = Quaternion(-0.00618428, -0.00495338, -0.0269892, 0.999604)
+bones/23/rotation = Quaternion(-0.492808, -0.00262191, 0.00521295, 0.870119)
 
 [node name="Bottom" parent="Pivot/Character/RobotArmature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("3_jwmgk")
@@ -296,8 +292,11 @@ _Camera = NodePath("../../CameraPivot")
 script = ExtResource("10_2260g")
 _Player = NodePath("../..")
 
-[node name="AirDive" type="Node" parent="StateMachine"]
-script = ExtResource("11_s8qvs")
+[node name="AirDive" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Pivot", "_Camera")]
+script = ExtResource("11_ijiek")
+_Player = NodePath("../..")
+_Pivot = NodePath("../../Pivot")
+_Camera = NodePath("../../CameraPivot")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_aa8f1")

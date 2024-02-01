@@ -62,7 +62,11 @@ public partial class PlayerWallSliding : State
 
         _Player.Velocity = _TargetVelocity;
 
-        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position - _Player.GetWallNormal(), Vector3.Up);
+        //Included to prevent unneccessary debugger output. May be worth taking a look at.
+        if (!_Player.Position.IsEqualApprox(_Player.Position - _Player.GetWallNormal()))
+        {
+            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position - _Player.GetWallNormal(), Vector3.Up);
+        }
 
         if (_Jumping)
         {

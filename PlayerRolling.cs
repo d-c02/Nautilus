@@ -34,8 +34,6 @@ public partial class PlayerRolling : State
 
     private Vector3 tmpVelocity = Vector3.Zero;
 
-    private Vector3 _Direction;
-
     [Export]
     private float _SlowdownConstant = 4.0f;
     // Called when the node enters the scene tree for the first time.
@@ -45,25 +43,26 @@ public partial class PlayerRolling : State
 
     public override void Enter()
     {
-		//_StandardCollider.Disabled = true;
-		//_RollingCollider.Disabled = false;
+        //_StandardCollider.Disabled = true;
+        //_RollingCollider.Disabled = false;
         //_Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+        Vector3 direction;
         Vector3 tmpDir = new Vector3(_Player.Velocity.X, 0, _Player.Velocity.Z);
         if (tmpDir.Length() < 0.1)
         {
-            _Direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
-            _Direction.X *= -1;
-            _Direction.Z *= -1;
+            direction = _Pivot.GlobalTransform.Basis.Z.Normalized();
+            direction.X *= -1;
+            direction.Z *= -1;
         }
         else
         {
-            _Direction = tmpDir.Normalized();
+            direction = tmpDir.Normalized();
         }
         _Player.SetAnimState("Roll");
-        tmpVelocity.X = _Direction.X * _Speed + _Player.Velocity.X / _SlowdownConstant;
-        tmpVelocity.Z = _Direction.Z * _Speed + _Player.Velocity.Z / _SlowdownConstant;
+        tmpVelocity.X = direction.X * _Speed + _Player.Velocity.X / _SlowdownConstant;
+        tmpVelocity.Z = direction.Z * _Speed + _Player.Velocity.Z / _SlowdownConstant;
         _CurTime = 0;
-        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _Direction, Vector3.Up);
+        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + direction, Vector3.Up);
     }
 
     public override void Exit()
@@ -83,16 +82,7 @@ public partial class PlayerRolling : State
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Grounded");
         }
-        //if (_CurTime >= _ActiveTime / 2)
-        //{
-        //tmpVelocity = _Direction * _Acceleration;
-        //}
-        //else
-        //{
-        //tmpVelocity = -1 * _Direction * _Acceleration;
-        //}
-        //tmpVelocity.X += _Player.GetFloorNormal().X * _Acceleration * (float) delta;
-        //tmpVelocity.Z += _Player.GetFloorNormal().Z * _Acceleration * (float) delta;
+
         if (!_Player.IsOnFloor())
         {
             _CurAirTime += delta;

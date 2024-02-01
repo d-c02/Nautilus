@@ -139,7 +139,7 @@ public partial class PlayerDiving : State
             _IsFalling = true;
         }
 
-        if (Input.IsActionJustPressed("dive") && _GrabBuffer && !_IsJumpGrabbing)
+        if (Input.IsActionJustPressed("roll") && _GrabBuffer && !_IsJumpGrabbing)
         {
             _IsRollGrabbing = true;
         }

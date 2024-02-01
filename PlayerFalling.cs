@@ -66,7 +66,13 @@ public partial class PlayerFalling : State
 
         if (Input.IsActionJustPressed("dive"))
         {
+            //CHANGE BACK TO DIVING AND ADD SEPARATE AIRDIVE
             EmitSignal(SignalName.Transitioned, this.Name + "", "Diving");
+        }
+
+        if (Input.IsActionJustPressed("airdive"))
+        {
+            EmitSignal(SignalName.Transitioned, this.Name + "", "AirDive");
         }
     }
 
