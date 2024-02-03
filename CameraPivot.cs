@@ -48,17 +48,32 @@ public partial class CameraPivot : Node3D
     private CameraZone _NextZone;
 
     [Export]
-    private float _PanUpperBound = -1.4f;
+    private float _PanUpperBound = 0.5f;
 
     [Export]
-    private float _PanLowerBound = 0.5f;
+    private float _PanLowerBound = -1.4f;
 
     [Export]
     private player _Player;
 
     [Export]
-    private Vector3 _CameraOffset = new Vector3(0, 3.5f, 0);
+    private float _CameraOffset = 3.5f;
 
+    private float _PrevPlayerGroundedPosition;
+
+    [Export]
+    private float _FreeLookVerticalTransitionSpeed = 20.0f;
+
+    [Export]
+    private float _CameraBoomUpperBound = 10.0f;
+
+    [Export]
+    private float _CameraBoomLowerBound = -10.0f;
+
+    private bool _Tracking = false;
+
+    [Export]
+    private float _HorizontalLerpSpeed = 10.0f;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -96,13 +111,13 @@ public partial class CameraPivot : Node3D
             _targetRotation.X = _targetRotation.X + _PanDir.X * RotationSpeed;
             _targetRotation.Y = _targetRotation.Y + _PanDir.Y * RotationSpeed;
 
-            if (_targetRotation.X < _PanUpperBound)
-            {
-                _targetRotation.X = _PanUpperBound;
-            }
-            if (_targetRotation.X > _PanLowerBound)
+            if (_targetRotation.X < _PanLowerBound)
             {
                 _targetRotation.X = _PanLowerBound;
+            }
+            if (_targetRotation.X > _PanUpperBound)
+            {
+                _targetRotation.X = _PanUpperBound;
             }
         }
     }
@@ -126,10 +141,26 @@ public partial class CameraPivot : Node3D
                 _TransitionTime = 0.0;
             }
         }
-        else if (_CurMode == (int) CameraModes.FreeLook)
-        {
-            this.GlobalPosition = _Player.GlobalPosition + _CameraOffset;
-        }
+        //else if (_CurMode == (int) CameraModes.FreeLook)
+        //{
+            //this.GlobalPosition = new Vector3(_Player.GlobalPosition.X, this.GlobalPosition.Y, _Player.GlobalPosition.Z);
+            float hspeed = Math.Min((this.GlobalPosition - _Player.GlobalPosition).Length() * _HorizontalLerpSpeed, _HorizontalLerpSpeed);
+            this.GlobalPosition = this.GlobalPosition.Lerp(new Vector3(_Player.GlobalPosition.X, this.GlobalPosition.Y, _Player.GlobalPosition.Z), (float) delta * hspeed);
+            if (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition > _CameraBoomUpperBound || _Player.GlobalPosition.Y - _PrevPlayerGroundedPosition < _CameraBoomLowerBound)
+            {
+                _Tracking = true;
+            }
+            if (_Player.IsOnFloor() || _Tracking)
+            {
+                _PrevPlayerGroundedPosition = _Player.GlobalPosition.Y;
+                if (_Player.IsOnFloor())
+                {
+                    _Tracking = false;
+                }
+            }
+            float speed = Math.Min(Math.Min(Math.Abs(_CameraBoomUpperBound - (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition)), Math.Abs(_CameraBoomLowerBound - (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition))) * _FreeLookVerticalTransitionSpeed * 0.05f, _FreeLookVerticalTransitionSpeed);
+            this.GlobalPosition = this.GlobalPosition.Lerp(new Vector3(this.GlobalPosition.X, _PrevPlayerGroundedPosition + _CameraOffset, this.GlobalPosition.Z), (float) delta * speed);
+        //}
     }
     public Vector3 GetMovementVector(Vector3 playerPosition)
     {
