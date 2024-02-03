@@ -93,8 +93,15 @@ public partial class PlayerAirDiving : State
 
         _Player.Velocity = _targetVelocity;
 
-        _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _Player.Velocity, Vector3.Up);
+        //if (!_Player.Position.IsEqualApprox(_Player.Position + _Player.Velocity))
+        //{
+        //    _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _Player.Velocity, Vector3.Up);
+        //}
 
+        if (!_Player.Velocity.IsZeroApprox() && !_Player.Velocity.Normalized().IsEqualApprox(Vector3.Up) && !_Player.Velocity.Normalized().IsEqualApprox(Vector3.Down))
+        {
+            _Player.GetNode<Node3D>("Pivot").LookAt(_Player.Position + _Player.Velocity, Vector3.Up);
+        }
         if (_Player.IsOnFloor())
         {
             _Player.Velocity = Vector3.Zero;

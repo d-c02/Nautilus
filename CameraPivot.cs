@@ -47,11 +47,24 @@ public partial class CameraPivot : Node3D
 
     private CameraZone _NextZone;
 
+    [Export]
+    private float _PanUpperBound = -1.4f;
+
+    [Export]
+    private float _PanLowerBound = 0.5f;
+
+    [Export]
+    private player _Player;
+
+    [Export]
+    private Vector3 _CameraOffset = new Vector3(0, 3.5f, 0);
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
         _targetRotation = Rotation;
         _Camera.MakeCurrent();
+        this.TopLevel = true;
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -82,6 +95,15 @@ public partial class CameraPivot : Node3D
             }
             _targetRotation.X = _targetRotation.X + _PanDir.X * RotationSpeed;
             _targetRotation.Y = _targetRotation.Y + _PanDir.Y * RotationSpeed;
+
+            if (_targetRotation.X < _PanUpperBound)
+            {
+                _targetRotation.X = _PanUpperBound;
+            }
+            if (_targetRotation.X > _PanLowerBound)
+            {
+                _targetRotation.X = _PanLowerBound;
+            }
         }
     }
 
@@ -103,6 +125,10 @@ public partial class CameraPivot : Node3D
                 _NextCamera.MakeCurrent();
                 _TransitionTime = 0.0;
             }
+        }
+        else if (_CurMode == (int) CameraModes.FreeLook)
+        {
+            this.GlobalPosition = _Player.GlobalPosition + _CameraOffset;
         }
     }
     public Vector3 GetMovementVector(Vector3 playerPosition)

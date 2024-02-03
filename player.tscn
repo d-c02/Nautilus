@@ -288,9 +288,10 @@ script = ExtResource("7_5jmgu")
 _Player = NodePath("../..")
 _Camera = NodePath("../../CameraPivot")
 
-[node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player")]
+[node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("10_2260g")
 _Player = NodePath("../..")
+_Camera = NodePath("../../CameraPivot")
 
 [node name="AirDive" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Pivot", "_Camera")]
 script = ExtResource("11_ijiek")
@@ -306,7 +307,15 @@ parameters/Dive/BlendTree/TimeScale/scale = 2.0
 parameters/Roll/TimeScale/scale = 1.0
 parameters/Run/TimeScale/scale = 1.0
 
-[node name="CameraPivot" parent="." instance=ExtResource("10_k4kc6")]
+[node name="CameraPivot" parent="." node_paths=PackedStringArray("_Player") instance=ExtResource("10_k4kc6")]
+transform = Transform3D(1, 0, 0, 0, 0.916362, 0.400349, 0, -0.400349, 0.916362, 0, 3.51058, 0)
+_Player = NodePath("..")
+
+[node name="Camera3D" parent="CameraPivot" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+
+[node name="TransitionCamera" parent="CameraPivot" index="1"]
+visible = false
 
 [editable path="Pivot/Character"]
 [editable path="CameraPivot"]
