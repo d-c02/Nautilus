@@ -48,7 +48,7 @@ public partial class PlayerDiving : State
     private bool _GrabBuffer = false;
 
     [Export]
-    private int _JumpImpulse = 35;
+    private int _JumpImpulse = 25;
 
     [Export]
     private float _SlowdownConstant = 6.0f;

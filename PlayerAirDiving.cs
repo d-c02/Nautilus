@@ -6,7 +6,7 @@ public partial class PlayerAirDiving : State
 {
 
     [Export]
-    private float _DiveImpulse { get; set; } = 50.0f;
+    private float _DiveImpulse { get; set; } = 40.0f;
 
     [Export]
     private int _FallAcceleration { get; set; } = 100;

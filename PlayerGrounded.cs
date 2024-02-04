@@ -12,7 +12,7 @@ public partial class PlayerGrounded : State
     public int IdleAcceleration { get; set; } = 75;
 
     [Export]
-    public int JumpSpeed { get; set; } = 28;
+    public int JumpSpeed { get; set; } = 20;
 
     //[Export]
     //private Camera3D _Camera;

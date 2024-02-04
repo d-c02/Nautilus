@@ -65,7 +65,7 @@ public partial class CameraPivot : Node3D
     private float _FreeLookVerticalTransitionSpeed = 20.0f;
 
     [Export]
-    private float _CameraBoomUpperBound = 10.0f;
+    private float _CameraBoomUpperBound = 6.6f;
 
     [Export]
     private float _CameraBoomLowerBound = -10.0f;
@@ -158,7 +158,7 @@ public partial class CameraPivot : Node3D
                     _Tracking = false;
                 }
             }
-            float speed = Math.Min(Math.Min(Math.Abs(_CameraBoomUpperBound - (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition)), Math.Abs(_CameraBoomLowerBound - (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition))) * _FreeLookVerticalTransitionSpeed * 0.05f, _FreeLookVerticalTransitionSpeed);
+            float speed = Math.Min(Math.Min(Math.Abs(_CameraBoomUpperBound - (_Player.GlobalPosition.Y - _PrevPlayerGroundedPosition)), Math.Abs(-_CameraBoomLowerBound + (-_Player.GlobalPosition.Y + _PrevPlayerGroundedPosition))), _FreeLookVerticalTransitionSpeed);
             this.GlobalPosition = this.GlobalPosition.Lerp(new Vector3(this.GlobalPosition.X, _PrevPlayerGroundedPosition + _CameraOffset, this.GlobalPosition.Z), (float) delta * speed);
         //}
     }
