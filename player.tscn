@@ -89,6 +89,7 @@ states/Fall/position = Vector2(448, 100)
 states/Jump2/node = SubResource("AnimationNodeAnimation_p8e01")
 states/Jump2/position = Vector2(322, 95)
 transitions = ["Jump2", "Fall", SubResource("AnimationNodeStateMachineTransition_eef4q"), "Start", "Jump2", SubResource("AnimationNodeStateMachineTransition_u6lut"), "Fall", "End", SubResource("AnimationNodeStateMachineTransition_voxp7")]
+graph_offset = Vector2(-127, -12)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6gq8h"]
 animation = &"GroundSlide"
@@ -191,6 +192,7 @@ states/AirDive/node = SubResource("AnimationNodeAnimation_t6yvb")
 states/AirDive/position = Vector2(460, 200.76)
 states/Dive/node = SubResource("AnimationNodeStateMachine_5qxld")
 states/Dive/position = Vector2(460, 145)
+states/End/position = Vector2(950, 112)
 states/Fall/node = SubResource("AnimationNodeAnimation_oa0f5")
 states/Fall/position = Vector2(856, 153)
 states/Idle/node = SubResource("AnimationNodeAnimation_cx28e")
@@ -211,7 +213,7 @@ states/WallJumpTransition/position = Vector2(650, 145)
 states/WallSlide/node = SubResource("AnimationNodeAnimation_xvpvp")
 states/WallSlide/position = Vector2(569, 87)
 transitions = ["WallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_vgvpf"), "JumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_l7fct"), "TallJumpTransition", "Fall", SubResource("AnimationNodeStateMachineTransition_btn1g")]
-graph_offset = Vector2(-84.0493, 57.7596)
+graph_offset = Vector2(5.9507, 54.7596)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_AnimationTree")]
 floor_constant_speed = true
@@ -269,7 +271,6 @@ _InitialState = NodePath("Grounded")
 [node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("4_d1kly")
 _Player = NodePath("../..")
-JumpSpeed = 20
 _Camera = NodePath("../../CameraPivot")
 
 [node name="Falling" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
@@ -283,15 +284,11 @@ _Player = NodePath("../..")
 _Pivot = NodePath("../../Pivot")
 _StandardCollider = NodePath("../../StandardCollider")
 _RollingCollider = NodePath("../../RollCollider")
-_ActiveTime = 0.3
-_Speed = 30.0
-JumpSpeed = 18
 
 [node name="Diving" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("7_5jmgu")
 _Player = NodePath("../..")
 _Camera = NodePath("../../CameraPivot")
-_JumpImpulse = 25
 
 [node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Camera")]
 script = ExtResource("10_2260g")
@@ -300,7 +297,6 @@ _Camera = NodePath("../../CameraPivot")
 
 [node name="AirDive" type="Node" parent="StateMachine" node_paths=PackedStringArray("_Player", "_Pivot", "_Camera")]
 script = ExtResource("11_ijiek")
-_DiveImpulse = 40.0
 _Player = NodePath("../..")
 _Pivot = NodePath("../../Pivot")
 _Camera = NodePath("../../CameraPivot")
@@ -316,10 +312,6 @@ parameters/Run/TimeScale/scale = 1.0
 [node name="CameraPivot" parent="." node_paths=PackedStringArray("_Player") instance=ExtResource("10_k4kc6")]
 transform = Transform3D(1, 0, 0, 0, 0.916362, 0.400349, 0, -0.400349, 0.916362, 0, 3.51058, 0)
 _Player = NodePath("..")
-_CameraBoomUpperBound = 6.6
-
-[node name="Camera3D" parent="CameraPivot" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 
 [node name="TransitionCamera" parent="CameraPivot" index="1"]
 visible = false

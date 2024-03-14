@@ -1,15 +1,51 @@
-[gd_scene load_steps=14 format=3 uid="uid://dy23edwi76go7"]
+[gd_scene load_steps=32 format=3 uid="uid://dy23edwi76go7"]
 
 [ext_resource type="PackedScene" uid="uid://b4djs5yvwadac" path="res://player.tscn" id="1_rgunv"]
 [ext_resource type="PackedScene" uid="uid://wg0hqki78hb7" path="res://testmap.glb" id="2_uqp13"]
 [ext_resource type="Script" path="res://CameraZone.cs" id="3_frbn6"]
+[ext_resource type="Texture2D" uid="uid://dedbliiuvx7lp" path="res://assets/kenney_prototype_textures/dark/texture_03.png" id="3_t87ql"]
+[ext_resource type="Texture2D" uid="uid://d2a1mb1takld1" path="res://assets/kenney_prototype_textures/purple/texture_11.png" id="4_d7ksv"]
 [ext_resource type="Script" path="res://OnTrackCameraZone.cs" id="4_x3npt"]
+[ext_resource type="Texture2D" uid="uid://dly255ks807ki" path="res://assets/kenney_prototype_textures/orange/texture_05.png" id="5_37tqs"]
+[ext_resource type="Texture2D" uid="uid://de0eebp63gru8" path="res://assets/kenney_prototype_textures/green/texture_01.png" id="5_sxin1"]
+[ext_resource type="Texture2D" uid="uid://b3wg0m4ypln2u" path="res://assets/kenney_prototype_textures/purple/texture_08.png" id="6_4ipx7"]
+[ext_resource type="Texture2D" uid="uid://cq0i2j5xop2s6" path="res://assets/kenney_prototype_textures/green/texture_02.png" id="6_goufm"]
+[ext_resource type="Texture2D" uid="uid://cjxd5njddys80" path="res://assets/kenney_prototype_textures/purple/texture_05.png" id="7_0hlxl"]
+[ext_resource type="Texture2D" uid="uid://cpulu7773s3fk" path="res://assets/kenney_prototype_textures/red/texture_05.png" id="10_6yf4q"]
+[ext_resource type="Texture2D" uid="uid://dmv54vs4xdsan" path="res://assets/kenney_prototype_textures/light/texture_02.png" id="11_qki3l"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_43h3d"]
 size = Vector3(100, 2, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_715gb"]
 size = Vector3(100, 2, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g0dut"]
+albedo_texture = ExtResource("3_t87ql")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk5j8"]
+albedo_texture = ExtResource("4_d7ksv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ohwb"]
+albedo_texture = ExtResource("5_37tqs")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qc77e"]
+albedo_texture = ExtResource("6_4ipx7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uhy64"]
+albedo_texture = ExtResource("7_0hlxl")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yvfhc"]
+albedo_texture = ExtResource("5_sxin1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yv863"]
+albedo_texture = ExtResource("6_goufm")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pecno"]
+albedo_texture = ExtResource("10_6yf4q")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dltb0"]
+albedo_texture = ExtResource("11_qki3l")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cry7p"]
 size = Vector3(13.795, 11.43, 30)
@@ -58,11 +94,34 @@ transform = Transform3D(1, 0, 0, 0, 0.0572155, 0.998362, 0, -0.998362, 0.0572155
 [node name="testmap" parent="." instance=ExtResource("2_uqp13")]
 transform = Transform3D(7.435, 0, 0, 0, 7.435, 0, 0, 0, 7.435, 6.08287, -74.5534, 155.312)
 
+[node name="Cube" parent="testmap" index="0"]
+material_override = SubResource("StandardMaterial3D_g0dut")
+
+[node name="Cylinder_001" parent="testmap" index="2"]
+material_override = SubResource("StandardMaterial3D_fk5j8")
+
+[node name="Cylinder_002" parent="testmap" index="3"]
+material_override = SubResource("StandardMaterial3D_3ohwb")
+
+[node name="Cylinder_003" parent="testmap" index="4"]
+material_override = SubResource("StandardMaterial3D_qc77e")
+
 [node name="Torus" parent="testmap" index="5"]
 transform = Transform3D(1.59935, 0, 0, 0, 1.59935, 0, 0, 0, 1.59935, -0.775295, -0.456726, 6.05918)
+material_override = SubResource("StandardMaterial3D_uhy64")
+
+[node name="Cube_001" parent="testmap" index="6"]
+material_override = SubResource("StandardMaterial3D_yvfhc")
+
+[node name="Cube_002" parent="testmap" index="7"]
+material_override = SubResource("StandardMaterial3D_yv863")
 
 [node name="Sphere" parent="testmap" index="9"]
 transform = Transform3D(1.99236, 0, 0, 0, 1.99236, 0, 0, 0, 1.99236, -1.55611, -0.795018, -0.261436)
+material_override = SubResource("StandardMaterial3D_pecno")
+
+[node name="Cube_004" parent="testmap" index="10"]
+material_override = SubResource("StandardMaterial3D_dltb0")
 
 [node name="CameraZone" type="Node3D" parent="." node_paths=PackedStringArray("_Area", "Camera", "_Player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.3464, -71.4121, 100.987)
